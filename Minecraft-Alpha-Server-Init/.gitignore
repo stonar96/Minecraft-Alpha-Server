@@ -44,5 +44,12 @@ Thumbs.db
 /temp/
 /mcp25.html
 /mcp25.zip
+/conf/init
 /conf/minecraft_rev.saffx
 /conf/minecraft_server_rev.saffx
+/world/
+/banned-ips.txt
+/banned-players.txt
+/ops.txt
+/server.log
+/server.properties
