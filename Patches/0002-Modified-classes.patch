@@ -1,0 +1,19 @@
+From 5572c268768f0d5e8f9ba50b5747b5dc510ec9be Mon Sep 17 00:00:00 2001
+From: stonar96 <minecraft.stonar96@gmail.com>
+Date: Sun, 24 Sep 2017 15:34:44 +0200
+Subject: [PATCH 2/3] Modified classes
+
+---
+ conf/server_obfuscation.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/conf/server_obfuscation.txt b/conf/server_obfuscation.txt
+index e69de29..4c49784 100644
+--- a/conf/server_obfuscation.txt
++++ b/conf/server_obfuscation.txt
+@@ -0,0 +1 @@
++MinecraftServer
+\ No newline at end of file
+-- 
+2.14.1.windows.1
+

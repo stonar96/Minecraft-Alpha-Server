@@ -1,0 +1,24 @@
+From b9a284fddb7e0361db4ff1e6fb3ba0f6e5b63c41 Mon Sep 17 00:00:00 2001
+From: stonar96 <minecraft.stonar96@gmail.com>
+Date: Sun, 24 Sep 2017 15:46:47 +0200
+Subject: [PATCH 3/3] Obfuscation helpers
+
+---
+ sources/minecraft_server/net/minecraft/server/MinecraftServer.java | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
+index b90ce6c..2fc71ef 100644
+--- a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
++++ b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
+@@ -55,6 +55,7 @@ public class MinecraftServer
+         new ThreadSleepForever(this);
+     }
+ 
++    private boolean start() throws UnknownHostException {return func_6008_d();}//Mod: Obfuscation helpers
+     private boolean func_6008_d() throws UnknownHostException
+     {
+         ThreadCommandReader threadcommandreader = new ThreadCommandReader(this);
+-- 
+2.14.1.windows.1
+
