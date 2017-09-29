@@ -53,3 +53,5 @@ Thumbs.db
 /ops.txt
 /server.log
 /server.properties
+/tools-linux/annotate_gl_constants.pyc
+/tools-linux/parsers.pyc
