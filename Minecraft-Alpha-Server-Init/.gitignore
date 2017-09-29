@@ -39,19 +39,19 @@ Thumbs.db
 # Minecraft-Alpha-Server #
 ##########################
 /bin/
-/final_out/
-/logs/
-/temp/
-/mcp25.html
-/mcp25.zip
 /conf/init
 /conf/minecraft_rev.saffx
 /conf/minecraft_server_rev.saffx
+/final_out/
+/logs/
+/temp/
+/tools-linux/annotate_gl_constants.pyc
+/tools-linux/parsers.pyc
 /world/
 /banned-ips.txt
 /banned-players.txt
+/mcp25.html
+/mcp25.zip
 /ops.txt
 /server.log
 /server.properties
-/tools-linux/annotate_gl_constants.pyc
-/tools-linux/parsers.pyc
