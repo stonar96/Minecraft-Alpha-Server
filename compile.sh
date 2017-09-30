@@ -6,7 +6,7 @@ case "$(uname -s)" in
     ./reobf.bat
     ;;
   *)
-    ./recompile.sh
+    ./recompile.sh '' 'server'
     ./reobf.sh
     ;;
 esac
