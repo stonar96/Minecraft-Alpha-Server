@@ -8,14 +8,6 @@ curl -O "$(egrep -o -m 1 'http://download.*/7422b88qu650547/mcp25\.zip' mcp25.ht
 rm -f 'mcp25.html'
 unzip 'mcp25.zip'
 cp -rf 'scripts-linux/.' '.'
-chmod +x 'cleanup.sh'
-chmod +x 'decompile.sh'
-chmod +x 'recompile.sh'
-chmod +x 'reobf.sh'
-chmod +x 'setup.sh'
-chmod +x 'test_game.sh'
-chmod +x 'test_server.sh'
-chmod +x 'update_names.sh'
 rm -rf 'jars'
 mkdir 'jars'
 cd 'jars'
@@ -31,6 +23,14 @@ case "$(uname -s)" in
 esac
 git init
 git config core.autocrlf true
+git update-index --chmod='+x' 'cleanup.sh'
+git update-index --chmod='+x' 'decompile.sh'
+git update-index --chmod='+x' 'recompile.sh'
+git update-index --chmod='+x' 'reobf.sh'
+git update-index --chmod='+x' 'setup.sh'
+git update-index --chmod='+x' 'test_game.sh'
+git update-index --chmod='+x' 'test_server.sh'
+git update-index --chmod='+x' 'update_names.sh'
 git add '.'
 git -c 'user.name=stonar96' -c 'user.email=minecraft.stonar96@gmail.com' commit -m 'Initial commit' --date='Sun Jan 1 00:00:00 2017 +0200'
-GIT_COMMITTER_DATE='Sun Jan 1 00:00:00 2017 +0200' git -c user.name='stonar96' -c user.email='minecraft.stonar96@gmail.com' commit --amend --no-edit
+GIT_COMMITTER_DATE='Sun Jan 1 00:00:00 2017 +0200' git -c 'user.name=stonar96' -c 'user.email=minecraft.stonar96@gmail.com' commit --amend --no-edit
