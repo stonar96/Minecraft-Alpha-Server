@@ -1,7 +1,7 @@
-From ce0bc9e998ae40bbf66dfc657dd0d8591891dfaa Mon Sep 17 00:00:00 2001
+From d7bc8ac2719beeebb50e215707b6694b72bf2929 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:46:47 +0200
-Subject: [PATCH 3/3] Obfuscation helpers
+Subject: [PATCH] Obfuscation helpers
 
 ---
  sources/minecraft_server/net/minecraft/server/MinecraftServer.java | 1 +

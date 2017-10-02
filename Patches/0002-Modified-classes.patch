@@ -1,7 +1,7 @@
-From c976a6e7517bec6ed50805ddbfe925b8dfa33854 Mon Sep 17 00:00:00 2001
+From 6b901353e37c56c8fd7c0a8d69c86a8afcefd522 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:34:44 +0200
-Subject: [PATCH 2/3] Modified classes
+Subject: [PATCH] Modified classes
 
 ---
  conf/server_obfuscation.txt | 1 +
