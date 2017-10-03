@@ -4,20 +4,12 @@ mkdir 'Minecraft-Alpha-Server'
 cp -rf 'Minecraft-Alpha-Server-Init/.' 'Minecraft-Alpha-Server'
 cd 'Minecraft-Alpha-Server'
 git init
+git config core.autocrlf true
 curl -o 'mcp25.html' 'http://www.mediafire.com/file/7422b88qu650547/mcp25.zip'
 curl -O "$(egrep -o -m 1 'http://download.*/7422b88qu650547/mcp25\.zip' mcp25.html)"
 rm -f 'mcp25.html'
 unzip 'mcp25.zip'
 cp -rf 'scripts-linux/.' '.'
-git config core.autocrlf true
-git update-index --add --chmod='+x' 'cleanup.sh'
-git update-index --add --chmod='+x' 'decompile.sh'
-git update-index --add --chmod='+x' 'recompile.sh'
-git update-index --add --chmod='+x' 'reobf.sh'
-git update-index --add --chmod='+x' 'setup.sh'
-git update-index --add --chmod='+x' 'test_game.sh'
-git update-index --add --chmod='+x' 'test_server.sh'
-git update-index --add --chmod='+x' 'update_names.sh'
 rm -rf 'jars'
 mkdir 'jars'
 cd 'jars'
@@ -25,9 +17,25 @@ curl -O 'https://web.archive.org/web/20101205185606/http://www.minecraft.net:80/
 cd '..'
 case "$(uname -s)" in
   MINGW*|CYGWIN*)
+    git update-index --add --chmod='+x' 'cleanup.sh'
+    git update-index --add --chmod='+x' 'decompile.sh'
+    git update-index --add --chmod='+x' 'recompile.sh'
+    git update-index --add --chmod='+x' 'reobf.sh'
+    git update-index --add --chmod='+x' 'setup.sh'
+    git update-index --add --chmod='+x' 'test_game.sh'
+    git update-index --add --chmod='+x' 'test_server.sh'
+    git update-index --add --chmod='+x' 'update_names.sh'
     ./decompile.bat
     ;;
   *)
+    chmod +x 'cleanup.sh'
+    chmod +x 'decompile.sh'
+    chmod +x 'recompile.sh'
+    chmod +x 'reobf.sh'
+    chmod +x 'setup.sh'
+    chmod +x 'test_game.sh'
+    chmod +x 'test_server.sh'
+    chmod +x 'update_names.sh'
     ./decompile.sh
     ;;
 esac
