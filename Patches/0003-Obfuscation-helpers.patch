@@ -19,6 +19,3 @@ index b90ce6c..2fc71ef 100644
      private boolean func_6008_d() throws UnknownHostException
      {
          ThreadCommandReader threadcommandreader = new ThreadCommandReader(this);
--- 
-2.14.1.windows.1
-
