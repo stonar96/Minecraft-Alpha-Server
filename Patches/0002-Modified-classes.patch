@@ -1,16 +1,17 @@
-From 5856afc8124215d1844359972e158d90db3471e1 Mon Sep 17 00:00:00 2001
+From e0dd3162efc199a1a03164cc726dec470a2b71e1 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:34:44 +0200
 Subject: [PATCH] Modified classes
 
 ---
- conf/server_obfuscation.txt | 1 +
- 1 file changed, 1 insertion(+)
+ conf/server_obfuscation.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/conf/server_obfuscation.txt b/conf/server_obfuscation.txt
-index e69de29..4c49784 100644
+index e69de29..e482b5d 100644
 --- a/conf/server_obfuscation.txt
 +++ b/conf/server_obfuscation.txt
-@@ -0,0 +1 @@
+@@ -0,0 +1,2 @@
 +MinecraftServer
++NetLoginHandler
 \ No newline at end of file
