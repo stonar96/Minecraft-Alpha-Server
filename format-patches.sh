@@ -2,4 +2,4 @@
 rm -rf 'Patches'
 mkdir 'Patches'
 cd 'Minecraft-Alpha-Server'
-git format-patch -o '../Patches' "$(git rev-list --max-parents=0 HEAD)" --no-signature -N
+git format-patch -o '../Patches' --no-signature -N "$(git rev-list --max-parents=0 HEAD)"
