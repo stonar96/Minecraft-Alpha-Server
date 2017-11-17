@@ -7,7 +7,7 @@
 * Git
 * Unzip
 * JDK
-* Wine
+* Wine and i386 architecture
 * Python
 ### Mac
 I don't know.
