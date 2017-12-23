@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "${0%/*}"
 rm -rf 'Patches'
 mkdir 'Patches'
 cd 'Minecraft-Alpha-Server'

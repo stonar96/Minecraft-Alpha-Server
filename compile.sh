@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "${0%/*}"
 cd 'Minecraft-Alpha-Server'
 case "$(uname -s)" in
   MINGW*|CYGWIN*)

@@ -1,4 +1,5 @@
 #!/bin/bash
+cd "${0%/*}"
 rm -rf 'Minecraft-Alpha-Server'
 mkdir 'Minecraft-Alpha-Server'
 cp -rf 'Minecraft-Alpha-Server-Init/.' 'Minecraft-Alpha-Server'
