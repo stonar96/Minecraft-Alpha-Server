@@ -11,5 +11,7 @@ case "$(uname -s)" in
     ./reobf.sh
     ;;
 esac
-#cp -f jars/minecraft_server.jar final_out/minecraft_server.jar
-#zip -ur ...?
+rm -rf 'final_out/minecraft_server.jar'
+cp -f 'jars/minecraft_server.jar' 'final_out/minecraft_server.jar'
+cd 'final_out/minecraft_server'
+jar -uf '../minecraft_server.jar' '.'
