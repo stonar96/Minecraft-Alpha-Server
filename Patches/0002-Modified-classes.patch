@@ -1,11 +1,8 @@
-From 1d8cbd712f7401c505e5f3d4ea33216c5889bd25 Mon Sep 17 00:00:00 2001
+From 61482b1e923f5b4662f6c0eb35042efaa9dc31c2 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:34:44 +0200
 Subject: [PATCH] Modified classes
 
----
- conf/server_obfuscation.txt | 3 +++
- 1 file changed, 3 insertions(+)
 
 diff --git a/conf/server_obfuscation.txt b/conf/server_obfuscation.txt
 index e69de29..2ef6fe5 100644

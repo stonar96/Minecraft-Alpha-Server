@@ -54,3 +54,9 @@ Thumbs.db
 /ops.txt
 /server.log
 /server.properties
+
+# IDE #
+#######
+sources/.classpath
+sources/.gitignore
+sources/.project

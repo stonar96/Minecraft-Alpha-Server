@@ -1,11 +1,8 @@
-From 9922d063b0310e83458f4242614002e17b230c3c Mon Sep 17 00:00:00 2001
+From 1eb33c8e452019235d352a71f6833fbd02db8385 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Tue, 3 Oct 2017 17:39:19 +0200
 Subject: [PATCH] Valid login
 
----
- .../net/minecraft/src/NetLoginHandler.java                 | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
 
 diff --git a/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java b/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
 index 40a9980..55f2768 100644

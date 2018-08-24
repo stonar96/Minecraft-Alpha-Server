@@ -1,12 +1,8 @@
-From 625074dee3f3911f28ed41e17678dd5971008910 Mon Sep 17 00:00:00 2001
+From 807bc258b9bb19c1699d531a5e11e1e1749528fd Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:46:47 +0200
 Subject: [PATCH] Obfuscation helpers
 
----
- .../net/minecraft/server/MinecraftServer.java            |  1 +
- .../net/minecraft/src/NetServerHandler.java              | 16 ++++++++++++++++
- 2 files changed, 17 insertions(+)
 
 diff --git a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
 index b90ce6c..2fc71ef 100644
