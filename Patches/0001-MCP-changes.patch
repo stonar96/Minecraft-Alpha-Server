@@ -1,4 +1,4 @@
-From b43fd9567ec08f9bf17e57dd77816e2af987e42e Mon Sep 17 00:00:00 2001
+From c4ba5bae0da2f21b02facee90734585ed5a9ec93 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:29:54 +0200
 Subject: [PATCH] MCP changes
@@ -20,3 +20,33 @@ index 052d83b..e69de29 100644
 -Block
 -Entity
 -BlockDoor
+diff --git a/recompile.bat b/recompile.bat
+index 9b46cb4..295ed55 100644
+--- a/recompile.bat
++++ b/recompile.bat
+@@ -27,7 +27,9 @@ javac -g -verbose -sourcepath "%MCJADOUT%" -d "%MCBIN%" "%MCSNDFIX%" 2>>"%MCPCOM
+ 
+ echo Compiling Minecraft Server
+ echo *** Compiling Minecraft Server >>"%MCPCOMPLOG%"
+-javac -g -verbose -sourcepath "%MCSJADOUT%" -d "%MCSBIN%" %MCSSRC1%\*.java %MCSSRC2%\*.java 2>>"%MCPCOMPLOG%"
++REM javac -g -verbose -sourcepath "%MCSJADOUT%" -d "%MCSBIN%" %MCSSRC1%\*.java %MCSSRC2%\*.java 2>>"%MCPCOMPLOG%"
++dir "%MCSJADOUT%\*.java" /s /b>"%MCPTEMPDIR%\sources"
++javac -g -verbose -sourcepath "%MCSJADOUT%" -d "%MCSBIN%" @%MCPTEMPDIR%\sources 2>>"%MCPCOMPLOG%"
+ 
+ echo === MCP %MCPVERSION% recompile script finished ===
+ pause
+diff --git a/recompile.sh b/recompile.sh
+index b9be957..1dfb34b 100755
+--- a/recompile.sh
++++ b/recompile.sh
+@@ -33,7 +33,9 @@ fi
+ if [ "$2" != "client" ]; then
+   echo "Compiling Minecraft Server"
+   echo "*** Compiling Minecraft Server" >> $MCPCOMPLOG
+-  javac -g -verbose -sourcepath $MCSJADOUT -d $MCSBIN $MCSSRC1/*.java $MCSSRC2/*.java 2>> $MCPCOMPLOG || bail
++  #javac -g -verbose -sourcepath $MCSJADOUT -d $MCSBIN $MCSSRC1/*.java $MCSSRC2/*.java 2>> $MCPCOMPLOG || bail
++  find $MCSJADOUT -name "*.java">$MCPTEMPDIR/sources
++  javac -g -verbose -sourcepath $MCSJADOUT -d $MCSBIN @$MCPTEMPDIR/sources 2>> $MCPCOMPLOG || bail
+ fi
+ 
+ echo "=== MCP $MCPVERSION recompile script finished ==="
