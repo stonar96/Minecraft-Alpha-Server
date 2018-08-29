@@ -1,4 +1,4 @@
-From 81afd752af1dc0845ee86f5bb77a2c93c8927b4a Mon Sep 17 00:00:00 2001
+From 74f0817d465af7f4ba9a75937147b0d46af4a45a Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:29:54 +0200
 Subject: [PATCH] MCP changes
@@ -50,6 +50,25 @@ index b9be957..1dfb34b 100755
  fi
  
  echo "=== MCP $MCPVERSION recompile script finished ==="
+diff --git a/tools-linux/def_class.py b/tools-linux/def_class.py
+index 0eed91d..c32eafe 100644
+--- a/tools-linux/def_class.py
++++ b/tools-linux/def_class.py
+@@ -340,11 +340,9 @@ class ClassDef():
+         self.post_cp_buffer = self.stream.read()
+ 
+     def write_class(self, filename):
+-        pathname = ''
+-        for i in filename.split('/')[:-1]:
+-            pathname = os.path.join(pathname, i)
+-        try: os.makedirs(pathname)
+-        except: pass
++        # Thanks to @lukjp for resolving this
++        try: os.makedirs(os.path.dirname(filename))
++        except OSError: pass
+             
+         print "Writing out %s."%filename
+         ffout = open(filename, 'wb')
 diff --git a/tools-linux/obfuscathon.py b/tools-linux/obfuscathon.py
 index 33853d9..60e8181 100644
 --- a/tools-linux/obfuscathon.py

@@ -47,6 +47,7 @@ Thumbs.db
 /temp/
 !/tools/obfuscathon.exe
 /tools-linux/*
+!/tools-linux/def_class.py
 !/tools-linux/obfuscathon.py
 !/tools-linux/setup.py
 /world/
