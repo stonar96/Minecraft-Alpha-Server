@@ -1,4 +1,4 @@
-From eebd613a02fd88abee4cacd05bad7caa692b3475 Mon Sep 17 00:00:00 2001
+From 81afd752af1dc0845ee86f5bb77a2c93c8927b4a Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:29:54 +0200
 Subject: [PATCH] MCP changes
@@ -50,3 +50,66 @@ index b9be957..1dfb34b 100755
  fi
  
  echo "=== MCP $MCPVERSION recompile script finished ==="
+diff --git a/tools-linux/obfuscathon.py b/tools-linux/obfuscathon.py
+index 33853d9..60e8181 100644
+--- a/tools-linux/obfuscathon.py
++++ b/tools-linux/obfuscathon.py
+@@ -61,6 +61,10 @@ def main(options, args):
+         if len(classname.split('/')) == 1:                pkg = 'net/minecraft/src/'
+         if classname in ['Minecraft', 'MinecraftApplet']: pkg = 'net/minecraft/client/'
+         if classname in ['MinecraftServer']:              pkg = 'net/minecraft/server/'
++        if len(classname.split('.')) != 1:
++            pkg = classname
++            classname = classname.split('.').pop()
++            pkg = pkg[:- len(classname)].replace('.', '/')
+         print ('+ Normalizing mapping tables for %s%s.'%(pkg,classname))          
+         match_table = current_project.normalize_mapping_table('%s%s'%(pkg,classname), parsed_match)
+         print ('+ Remapping %s%s.'%(pkg,classname))          
+@@ -71,6 +75,10 @@ def main(options, args):
+         if len(classname.split('/')) == 1:                pkg = 'net/minecraft/src/'
+         if classname in ['Minecraft', 'MinecraftApplet']: pkg = 'net/minecraft/client/'
+         if classname in ['MinecraftServer']:              pkg = 'net/minecraft/server/'        
++        if len(classname.split('.')) != 1:
++            pkg = classname
++            classname = classname.split('.').pop()
++            pkg = pkg[:- len(classname)].replace('.', '/')
+         current_project.apply_changes ('%s%s'%(pkg,classname))
+         current_project.remap_packages('%s%s'%(pkg,classname), match_table)
+         current_project.apply_changes ('%s%s'%(pkg,classname))
+diff --git a/tools-linux/setup.py b/tools-linux/setup.py
+new file mode 100644
+index 0000000..d4d5d3f
+--- /dev/null
++++ b/tools-linux/setup.py
+@@ -0,0 +1,6 @@
++from distutils.core import setup
++import py2exe
++
++# Run this on Windows (10) with python-2.7.msi (2.7.0, 32-bit) and py2exe-0.6.9.win32-py2.7.exe by executing 'setup.py py2exe' to get the obfuscathon.exe
++
++setup(console = ['obfuscathon.py'], options = {"py2exe": {"bundle_files": 2}})
+diff --git a/tools/obfuscathon.exe b/tools/obfuscathon.exe
+index fd8f6e1bd7e427acb45347cf8ed1563a6c0d3415..959863f9e3ad8075b48f3e73d521efcaa9f0422e 100644
+GIT binary patch
+delta 1008
+zcmchUPfHs?7{=dsVmEAdO*Ao@thS^=p(iP&h>9RWbQ8C6H!ac>`j<|6SWAs@!OMoE
+z1gezc!T09LqX(fWdnxoAh#$j4zeJ%kn^3knwDjWsnVI*Q=Xqy;Z08I+=h#yb?@<C>
+zcA29OY>9f<OI+pvpdnr(aG9}`{FVi{8WFX)ypMFeJkL(D!Nu}tojr&JwQ?L)9eo9g
+z&qt7MTeI|OBh}8swgOEDc^X<8ya(_Tz>QF>BcB+Eo+@=$Y-OQ~^5IF?jzRM~3S9)F
+zyRHUZfK~#04f;Xh*9xvK(|i=VY|xcY!iw;S>{|wtX31B<9R)rmg9FizhjtOoMby4E
+zDXfInlxp;;(jirQgYi^^WjbVe$^HPG2}O_n8}NetC*VYsP!gr&XMVLZx5kFhbcu#h
+zOJRJ-awD|t8te%NczpL}aAn;=#Y6Fj=SZ!zFii)Q{Y*^Mjh%)U7jv`Tc=!5EoqksK
+z#@0mrXk8Ab97@#LJVZ{ay%?WH1+!S7RXhKC{nXyVHTq&N;5z-VXVE0hDPoBnXF;)K
+zgEAdCd)hO(9GAlj(yRAzi&m-+GmE<Dn8F#%hj*F*1gF(ktX*?fi^cM$IhbnKT(__L
+Nz@hWz%pu|L^)DhA;~M|~
+
+delta 534
+zcmZ{gPfG$p6u{pbN?CVP6aOb2grZYqhfwhntbY>I)r5)&I!qA;Q5Mu;MMDG+9isOI
+zI(CQ<7P=IjJay?aBz=Sq9^26f4VqydGr#v9@5eMAuyKza32~8ZSYdr1U9mWIuw(1{
+z0N}(text&IaeL1V@Ht_=&2`tJ+r$d%x{bHQwZhuW*jlrq^aQ#E)ZIs*!)&DPha(GA
+zHRLX+$#4vy+kgiKa38t*2XYVSvPc~;@TN1m1Qi*$cLeHIXfmiNz<nchSZcztQbm;F
+zsf?SKQg>+cB5cC-FXWC9kKn*VVq<bM131fm<%G@D_=qL~3Tz+8`f&2U4PmG_{&Y+Z
+zUAwr+0X7yw#!YSx>3O||PKxC(sGF}kRr9k;NfA;aq$yQsW0~FyF>-2tTGGm>QcH_s
+zl3ukirszXcF-`Nus3j{JGQ^8#^0v56i?Bnz;xd-VQ_6WF3R=*CAq)(*iveh>#(8Ov
+FeFMTnanb+)
+

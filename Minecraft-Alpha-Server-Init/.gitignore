@@ -45,7 +45,10 @@ Thumbs.db
 /final_out/
 /logs/
 /temp/
-/tools-linux/
+!/tools/obfuscathon.exe
+/tools-linux/*
+!/tools-linux/obfuscathon.py
+!/tools-linux/setup.py
 /world/
 /banned-ips.txt
 /banned-players.txt

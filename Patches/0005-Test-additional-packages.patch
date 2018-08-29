@@ -1,0 +1,41 @@
+From 19a78d019ffdca8710e181146a8f0f940f520d7f Mon Sep 17 00:00:00 2001
+From: stonar96 <minecraft.stonar96@gmail.com>
+Date: Wed, 29 Aug 2018 12:54:11 +0200
+Subject: [PATCH] Test additional packages
+
+
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/Test.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/Test.java
+new file mode 100644
+index 0000000..dcfdee6
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/Test.java
+@@ -0,0 +1,9 @@
++package com.vanillage.minecraftalphaserver;
++
++import java.util.logging.Logger;
++
++public class Test {
++    public void test(Logger logger) {
++        logger.info("Test");
++    }
++}
+diff --git a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
+index 2fc71ef..d49436c 100644
+--- a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
++++ b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
+@@ -4,6 +4,7 @@
+ 
+ package net.minecraft.server;
+ 
++import com.vanillage.minecraftalphaserver.Test;
+ import net.minecraft.src.AxisAlignedBB;
+ import net.minecraft.src.ChunkProviderServer;
+ import net.minecraft.src.ConsoleLogManager;
+@@ -63,6 +64,7 @@ public class MinecraftServer
+         threadcommandreader.start();
+         ConsoleLogManager.init();
+         logger.info("Starting minecraft server version 0.2.8");
++        new Test().test(logger);
+         if(Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L)
+         {
+             logger.warning("**** NOT ENOUGH RAM!");
