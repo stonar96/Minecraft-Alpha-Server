@@ -1,21 +1,29 @@
 #!/bin/bash
 cd "${0%/*}"
+if [ -f 'Resources/mcp25.zip' ] && [ -f 'Resources/minecraft_server.jar' ]; then
+  echo 'Resources already exist.'
+else
+  rm -rf 'Resources'
+  mkdir 'Resources'
+  cd 'Resources'
+  curl -o 'mcp25.html' 'http://www.mediafire.com/file/7422b88qu650547/mcp25.zip'
+  curl -O "$(egrep -o -m 1 'http://download.*/7422b88qu650547/mcp25\.zip' mcp25.html)"
+  rm -f 'mcp25.html'
+  curl -O 'https://web.archive.org/web/20101205185606/http://www.minecraft.net:80/download/minecraft_server.jar'
+  cd '..'
+fi
 rm -rf 'Minecraft-Alpha-Server'
 mkdir 'Minecraft-Alpha-Server'
 cp -rf 'Minecraft-Alpha-Server-Init/.' 'Minecraft-Alpha-Server'
 cd 'Minecraft-Alpha-Server'
 git init
 git config core.autocrlf true
-curl -o 'mcp25.html' 'http://www.mediafire.com/file/7422b88qu650547/mcp25.zip'
-curl -O "$(egrep -o -m 1 'http://download.*/7422b88qu650547/mcp25\.zip' mcp25.html)"
-rm -f 'mcp25.html'
+cp -f '../Resources/mcp25.zip' 'mcp25.zip'
 unzip 'mcp25.zip'
 cp -rf 'scripts-linux/.' '.'
 rm -rf 'jars'
 mkdir 'jars'
-cd 'jars'
-curl -O 'https://web.archive.org/web/20101205185606/http://www.minecraft.net:80/download/minecraft_server.jar'
-cd '..'
+cp -f '../Resources/minecraft_server.jar' 'jars/minecraft_server.jar'
 case "$(uname -s)" in
   MINGW*|CYGWIN*)
     git update-index --add --chmod='+x' 'cleanup.sh'
