@@ -1,0 +1,138 @@
+From d7e2f18443e0add773f79f3ea907e6bffb9516a4 Mon Sep 17 00:00:00 2001
+From: stonar96 <minecraft.stonar96@gmail.com>
+Date: Thu, 30 Aug 2018 23:05:43 +0200
+Subject: [PATCH] Fix current item
+
+
+diff --git a/sources/minecraft_server/net/minecraft/src/InventoryPlayer.java b/sources/minecraft_server/net/minecraft/src/InventoryPlayer.java
+index d09234e..c4214c5 100644
+--- a/sources/minecraft_server/net/minecraft/src/InventoryPlayer.java
++++ b/sources/minecraft_server/net/minecraft/src/InventoryPlayer.java
+@@ -13,14 +13,17 @@ public class InventoryPlayer
+         mainInventory = new ItemStack[37];
+         armorInventory = new ItemStack[4];
+         craftingInventory = new ItemStack[4];
+-        currentItem = 0;
++        //currentItem = 0;//Mc: Fix current item - not necessary
++        currentItem = -1;//Mod: Fix current item - not necessary
++        currentItemStack = null;//Mod: Fix current item
+         field_498_e = false;
+         player = entityplayer;
+     }
+ 
+     public ItemStack getCurrentItem()
+     {
+-        return mainInventory[currentItem];
++        //return mainInventory[currentItem];//Mc: Fix current item
++        return currentItemStack;//Mod: Fix current item
+     }
+ 
+     private int func_6126_d(int i)
+@@ -148,6 +151,11 @@ public class InventoryPlayer
+ 
+     public void setInventorySlotContents(int i, ItemStack itemstack)
+     {
++        if(i == -1)//Mod: Fix current item
++        {//Mod: Fix current item
++            currentItemStack = itemstack;//Mod: Fix current item
++            return;//Mod: Fix current item
++        }//Mod: Fix current item
+         ItemStack aitemstack[] = mainInventory;
+         if(i >= aitemstack.length)
+         {
+@@ -165,9 +173,11 @@ public class InventoryPlayer
+     public float getStrVsBlock(Block block)
+     {
+         float f = 1.0F;
+-        if(mainInventory[currentItem] != null)
++        //if(mainInventory[currentItem] != null)//Mc: Fix current item
++        if(currentItemStack != null)//Mod: Fix current item
+         {
+-            f *= mainInventory[currentItem].getStrVsBlock(block);
++            //f *= mainInventory[currentItem].getStrVsBlock(block);//Mc: Fix current item
++            f *= currentItemStack.getStrVsBlock(block);//Mod: Fix current item
+         }
+         return f;
+     }
+@@ -242,6 +252,10 @@ public class InventoryPlayer
+ 
+     public ItemStack getStackInSlot(int i)
+     {
++        if(i == -1)//Mod: Fix current item
++        {//Mod: Fix current item
++            return currentItemStack;//Mod: Fix current item
++        }//Mod: Fix current item
+         ItemStack aitemstack[] = mainInventory;
+         if(i >= aitemstack.length)
+         {
+@@ -361,6 +375,7 @@ public class InventoryPlayer
+     public ItemStack armorInventory[];
+     public ItemStack craftingInventory[];
+     public int currentItem;
++    public ItemStack currentItemStack;//Mod: Fix current item
+     private EntityPlayer player;
+     public boolean field_498_e;
+ }
+diff --git a/sources/minecraft_server/net/minecraft/src/ItemInWorldManager.java b/sources/minecraft_server/net/minecraft/src/ItemInWorldManager.java
+index 21cb306..c81e2b4 100644
+--- a/sources/minecraft_server/net/minecraft/src/ItemInWorldManager.java
++++ b/sources/minecraft_server/net/minecraft/src/ItemInWorldManager.java
+@@ -110,10 +110,12 @@ public class ItemInWorldManager
+         ItemStack itemstack1 = itemstack.useItemRightClick(world, entityplayer);
+         if(itemstack1 != itemstack || itemstack1 != null && itemstack1.stackSize != i)
+         {
+-            entityplayer.inventory.mainInventory[entityplayer.inventory.currentItem] = itemstack1;
++            //entityplayer.inventory.mainInventory[entityplayer.inventory.currentItem] = itemstack1;//Mc: Fix current item
++            entityplayer.inventory.currentItemStack = itemstack1;//Mod: Fix current item
+             if(itemstack1.stackSize == 0)
+             {
+-                entityplayer.inventory.mainInventory[entityplayer.inventory.currentItem] = null;
++                //entityplayer.inventory.mainInventory[entityplayer.inventory.currentItem] = null;//Mc: Fix current item
++                entityplayer.inventory.currentItemStack = null;//Mod: Fix current item
+             }
+             return true;
+         } else
+diff --git a/sources/minecraft_server/net/minecraft/src/NetServerHandler.java b/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
+index 288f9cb..949cff1 100644
+--- a/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
++++ b/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
+@@ -181,7 +181,8 @@ public class NetServerHandler extends NetHandler
+ 
+     public void handleBlockDig(Packet14BlockDig packet14blockdig)
+     {
+-        playerEntity.inventory.mainInventory[playerEntity.inventory.currentItem] = field_10_k;
++        //playerEntity.inventory.mainInventory[playerEntity.inventory.currentItem] = field_10_k;//Mc: Fix current item
++        playerEntity.inventory.currentItemStack = getCurrentItem();//Mod: Fix current item
+         boolean flag = mcServer.worldMngr.field_819_z = mcServer.configManager.isOp(playerEntity.username);
+         boolean flag1 = false;
+         if(packet14blockdig.status == 0)
+@@ -325,7 +326,8 @@ public class NetServerHandler extends NetHandler
+     public void handleBlockItemSwitch(Packet16BlockItemSwitch packet16blockitemswitch)
+     {
+         int i = packet16blockitemswitch.id;
+-        playerEntity.inventory.currentItem = playerEntity.inventory.mainInventory.length - 1;
++        //playerEntity.inventory.currentItem = playerEntity.inventory.mainInventory.length - 1;//Mc: Fix current item
++        playerEntity.inventory.currentItem = -1;//Mod: Fix current item
+         if(i == 0)
+         {
+             field_10_k = null;
+@@ -333,7 +335,8 @@ public class NetServerHandler extends NetHandler
+         {
+             field_10_k = new ItemStack(i);
+         }
+-        playerEntity.inventory.mainInventory[playerEntity.inventory.currentItem] = field_10_k;
++        //playerEntity.inventory.mainInventory[playerEntity.inventory.currentItem] = field_10_k;//Mc: Fix current item
++        playerEntity.inventory.currentItemStack = getCurrentItem();//Mod: Fix current item
+         mcServer.field_6028_k.func_12021_a(playerEntity, new Packet16BlockItemSwitch(playerEntity.field_331_c, i));
+     }
+ 
+@@ -510,7 +513,8 @@ public class NetServerHandler extends NetHandler
+     public void func_6006_a(Packet7 packet7)
+     {
+         Entity entity = mcServer.worldMngr.func_6158_a(packet7.field_9018_b);
+-        playerEntity.inventory.mainInventory[playerEntity.inventory.currentItem] = field_10_k;
++        //playerEntity.inventory.mainInventory[playerEntity.inventory.currentItem] = field_10_k;//Mc: Fix current item
++        playerEntity.inventory.currentItemStack = getCurrentItem();//Mod: Fix current item
+         if(entity != null && playerEntity.func_145_g(entity))
+         {
+             if(packet7.field_9020_c == 0)
