@@ -1,17 +1,20 @@
-From 92afd9ecddf421499223054e183cfc260b4502fb Mon Sep 17 00:00:00 2001
+From 73da6ed76c15c550a492f2d751da20e4ce957f54 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:34:44 +0200
 Subject: [PATCH] Modified classes
 
 
 diff --git a/conf/server_obfuscation.txt b/conf/server_obfuscation.txt
-index e69de29..7212426 100644
+index e69de29..44d26e7 100644
 --- a/conf/server_obfuscation.txt
 +++ b/conf/server_obfuscation.txt
-@@ -0,0 +1,5 @@
+@@ -0,0 +1,8 @@
 +MinecraftServer
++EntityPlayerMP
 +InventoryPlayer
 +ItemInWorldManager
 +NetLoginHandler
 +NetServerHandler
++com.vanillage.minecraftalphaserver.InventoryPlayerChecks.java
++com.vanillage.minecraftalphaserver.ItemDamage.java
 \ No newline at end of file

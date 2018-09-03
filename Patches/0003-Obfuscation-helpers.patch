@@ -1,4 +1,4 @@
-From 1529472da3a9fa51928e53aafd97549939304330 Mon Sep 17 00:00:00 2001
+From b6fb05a156a8c554c54688f996f14bc916ed89cb Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:46:47 +0200
 Subject: [PATCH] Obfuscation helpers
@@ -16,6 +16,18 @@ index b90ce6c..2fc71ef 100644
      private boolean func_6008_d() throws UnknownHostException
      {
          ThreadCommandReader threadcommandreader = new ThreadCommandReader(this);
+diff --git a/sources/minecraft_server/net/minecraft/src/EntityPlayerMP.java b/sources/minecraft_server/net/minecraft/src/EntityPlayerMP.java
+index 5bbda4e..e82b211 100644
+--- a/sources/minecraft_server/net/minecraft/src/EntityPlayerMP.java
++++ b/sources/minecraft_server/net/minecraft/src/EntityPlayerMP.java
+@@ -182,6 +182,7 @@ public class EntityPlayerMP extends EntityPlayer
+         return field_12012_al;
+     }
+ 
++    public NetServerHandler getNetServerHandler() {return field_421_a;}//Mod: Obfuscation helpers
+     public NetServerHandler field_421_a;
+     public MinecraftServer mcServer;
+     public ItemInWorldManager field_425_ad;
 diff --git a/sources/minecraft_server/net/minecraft/src/NetServerHandler.java b/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
 index 1941b32..288f9cb 100644
 --- a/sources/minecraft_server/net/minecraft/src/NetServerHandler.java

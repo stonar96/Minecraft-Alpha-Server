@@ -1,0 +1,287 @@
+From 7b7cb37b3ff57a95313739562d745bce561262a1 Mon Sep 17 00:00:00 2001
+From: stonar96 <minecraft.stonar96@gmail.com>
+Date: Mon, 3 Sep 2018 03:38:06 +0200
+Subject: [PATCH] Inventory player checks
+
+
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/InventoryPlayerChecks.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/InventoryPlayerChecks.java
+new file mode 100644
+index 0000000..2c26f84
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/InventoryPlayerChecks.java
+@@ -0,0 +1,136 @@
++package com.vanillage.minecraftalphaserver;
++
++import java.util.HashMap;
++import java.util.Map;
++
++import net.minecraft.src.EntityPlayerMP;
++import net.minecraft.src.ItemStack;
++import net.minecraft.src.NetServerHandler;
++import net.minecraft.src.Packet5PlayerInventory;
++
++public class InventoryPlayerChecks {
++    private final EntityPlayerMP player;
++    private int previousPacketType = -3;
++    private final Map<ItemStack, Runnable> stacks = new HashMap<>();
++    private final Map<ItemDamage, Integer> inventoryRemoved = new HashMap<>();
++    
++    public InventoryPlayerChecks(EntityPlayerMP player) {
++        this.player = player;
++    }
++    
++    public EntityPlayerMP getPlayer() {
++        return player;
++    }
++    
++    public boolean onPlayerInventoryPacket(Packet5PlayerInventory packet) {
++        ItemStack[] inventory;
++        
++        if (packet.type == -1) {
++            inventory = player.inventory.mainInventory;
++        } else if (packet.type == -2) {
++            inventory = player.inventory.craftingInventory;
++        } else if (packet.type == -3) {
++            inventory = player.inventory.armorInventory;
++        } else {
++            player.getNetServerHandler().kick("Invalid inventory type: " + packet.type + " in inventory packet");
++            NetServerHandler.logger.warning(player.username + " had an invalid inventory type: " + packet.type + " in inventory packet");
++            return false;
++        }
++        
++        if (previousPacketType - 1 != packet.type && (previousPacketType != -3 || packet.type != -1)) {
++            player.getNetServerHandler().kick("Invalid inventory packet order for inventory packet type: " + packet.type + " previous: " + previousPacketType);
++            NetServerHandler.logger.warning(player.username + " had an invalid inventory packet order for inventory packet type: " + packet.type + " previous: " + previousPacketType);
++            return false;
++        }
++        
++        previousPacketType = packet.type;
++        
++        if (packet.type == -1 && packet.stacks.length == 37) {
++            if (packet.stacks[36] == null) {
++                System.arraycopy(packet.stacks, 0, packet.stacks = new ItemStack[36], 0, 36);
++            } else {
++                player.getNetServerHandler().kick("Item: ID: " + packet.stacks[36].itemID + " damage: " + packet.stacks[36].itemDamage + " size: " + packet.stacks[36].stackSize + " in invalid slot");
++                NetServerHandler.logger.warning(player.username + " had an item: ID: " + packet.stacks[36].itemID + " damage: " + packet.stacks[36].itemDamage + " size: " + packet.stacks[36].stackSize + " in invalid slot");
++                return false;
++            }
++        } else if (packet.stacks.length != inventory.length) {
++            player.getNetServerHandler().kick("Invalid inventory size: " + packet.stacks.length + " for inventory packet type: " + packet.type);
++            NetServerHandler.logger.warning(player.username + " had an invalid inventory size: " + packet.stacks.length + " for inventory packet type: " + packet.type);
++            return false;
++        }
++        
++        NetServerHandler.logger.info("Inventory diff: player: " + player.username + " inventory packet type: " + packet.type);
++        Map<ItemDamage, Integer> inventoryRemoved = new HashMap<>();
++        
++        for (int i = 0; i < inventory.length; i++) {
++            if (!equals(packet.stacks[i], inventory[i])) {
++                NetServerHandler.logger.info("Slot: " + i + " inventory: " + ((inventory[i] == null) ? ("empty") : ("ID: " + inventory[i].itemID + " size: " + inventory[i].stackSize + " damage: " + inventory[i].itemDamage)) + " packet: " + ((packet.stacks[i] == null) ? ("empty") : ("ID: " + packet.stacks[i].itemID + " size: " + packet.stacks[i].stackSize + " damage: " + packet.stacks[i].itemDamage)));
++                
++                if (packet.stacks[i] != null) {
++                    ItemDamage itemDamage = new ItemDamage(packet.stacks[i]);
++                    
++                    if (!itemDamage.existsIngame(packet.stacks[i].stackSize, player.inventory)) {
++                        player.getNetServerHandler().kick("Invalid item: ID: " + packet.stacks[i].itemID + ", damage: " + packet.stacks[i].itemDamage + ", size: " + packet.stacks[i].stackSize + " in slot: " + i + " in inventory packet with type: " + packet.type);
++                        NetServerHandler.logger.warning(player.username + " had an invalid item: ID: " + packet.stacks[i].itemID + ", damage: " + packet.stacks[i].itemDamage + ", size: " + packet.stacks[i].stackSize + " in slot: " + i + " in inventory packet with type: " + packet.type);
++                        return false;
++                    }
++                    
++                    Integer amount = (amount = inventoryRemoved.get(itemDamage)) == null ? -packet.stacks[i].stackSize : amount - packet.stacks[i].stackSize;
++                    
++                    if (amount == 0) {
++                        inventoryRemoved.remove(itemDamage);
++                    } else {
++                        inventoryRemoved.put(itemDamage, amount);
++                    }
++                }
++                
++                if (inventory[i] != null) {
++                    ItemDamage itemDamage = new ItemDamage(inventory[i]);
++                    Integer amount = (amount = inventoryRemoved.get(itemDamage)) == null ? inventory[i].stackSize : amount + inventory[i].stackSize;
++                    
++                    if (amount == 0) {
++                        inventoryRemoved.remove(itemDamage);
++                    } else {
++                        inventoryRemoved.put(itemDamage, amount);
++                    }
++                }
++            }
++        }
++        
++        for (Map.Entry<ItemDamage, Integer> entry : inventoryRemoved.entrySet()) {
++            Integer amount = (amount = this.inventoryRemoved.get(entry.getKey())) == null ? entry.getValue() : amount + entry.getValue();
++            
++            if (amount == 0) {
++                this.inventoryRemoved.remove(entry.getKey());
++            } else {
++                this.inventoryRemoved.put(entry.getKey(), amount);
++            }
++        }
++        
++        if (packet.type == -3) {
++            NetServerHandler.logger.info("Inventory removed: player: " + player.username);
++            
++            for (Map.Entry<ItemDamage, Integer> entry : this.inventoryRemoved.entrySet()) {
++                NetServerHandler.logger.info("ID: " + entry.getKey().getItem().swiftedIndex + " damage: " + entry.getKey().getItemDamage() + " amount: " + entry.getValue());
++            }
++        }
++        
++        return true;
++    }
++    
++    private boolean equals(ItemStack itemStack1, ItemStack itemStack2) {
++        if (itemStack1 == itemStack2) {
++            return true;
++        }
++        
++        if (itemStack1 == null || itemStack2 == null) {
++            return false;
++        }
++        
++        if (itemStack1.itemID == itemStack2.itemID && itemStack1.stackSize == itemStack2.stackSize && itemStack1.itemDamage == itemStack2.itemDamage) {
++            return true;
++        }
++        
++        return false;
++    }
++}
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/ItemDamage.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/ItemDamage.java
+new file mode 100644
+index 0000000..e1e79cb
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/ItemDamage.java
+@@ -0,0 +1,95 @@
++package com.vanillage.minecraftalphaserver;
++
++import net.minecraft.src.InventoryPlayer;
++import net.minecraft.src.Item;
++import net.minecraft.src.ItemArmor;
++import net.minecraft.src.ItemFishingRod;
++import net.minecraft.src.ItemFlintAndSteel;
++import net.minecraft.src.ItemHoe;
++import net.minecraft.src.ItemStack;
++import net.minecraft.src.ItemSword;
++import net.minecraft.src.ItemTool;
++
++public class ItemDamage {
++    private final Item item;
++    private final int itemDamage;
++    
++    public ItemDamage() {
++        this((Item) null, 0);
++    }
++    
++    public ItemDamage(Item item) {
++        this(item, 0);
++    }
++    
++    public ItemDamage(Item item, int itemDamage) {
++        this.item = item;
++        this.itemDamage = itemDamage;
++    }
++    
++    public ItemDamage(int itemID) {
++        this(itemID, 0);
++    }
++    
++    public ItemDamage(int itemID, int itemDamage) {
++        this(itemID >= 0 && itemID < 32000 ? Item.itemsList[itemID] : null, itemDamage);
++    }
++    
++    public ItemDamage(ItemStack itemStack) {
++        this(itemStack, itemStack == null ? 0 : itemStack.itemDamage);
++    }
++    
++    public ItemDamage(ItemStack itemStack, int itemDamage) {
++        this(itemStack == null ? -1 : itemStack.itemID, itemDamage);
++    }
++    
++    public Item getItem() {
++        return item;
++    }
++    
++    public int getItemDamage() {
++        return itemDamage;
++    }
++    
++    public boolean exists() {
++        return item != null && itemDamage >= 0 && itemDamage <= item.getMaxDamage();
++    }
++    
++    public boolean exists(int stackSize) {
++        return exists() && stackSize > 0 && stackSize <= item.getItemStackLimit();
++    }
++    
++    public boolean exists(int stackSize, InventoryPlayer inventory) {
++        return exists(stackSize) && (inventory == null || stackSize <= inventory.getInventoryStackLimit());
++    }
++    
++    public boolean existsIngame() {
++        return exists() && itemDamage <= getMaxItemDamageIngame();
++    }
++    
++    public boolean existsIngame(int stackSize) {
++        return exists(stackSize) && itemDamage <= getMaxItemDamageIngame();
++    }
++    
++    public boolean existsIngame(int stackSize, InventoryPlayer inventory) {
++        return exists(stackSize, inventory) && itemDamage <= getMaxItemDamageIngame();
++    }
++    
++    public int getMaxItemDamageIngame() {
++        return hasItemDamageIngame() ? item.getMaxDamage() : 0;
++    }
++    
++    public boolean hasItemDamageIngame() {
++        return item instanceof ItemTool || item instanceof ItemArmor || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemFlintAndSteel || item instanceof ItemFishingRod;
++    }
++    
++    @Override
++    public boolean equals(Object obj) {
++        return obj == this || obj instanceof ItemDamage && ((ItemDamage) obj).item == item && ((ItemDamage) obj).itemDamage == itemDamage;
++    }
++    
++    @Override
++    public int hashCode() {
++        return item == null ? itemDamage : ((item.swiftedIndex << 16) + itemDamage);
++    }
++}
+diff --git a/sources/minecraft_server/net/minecraft/src/NetServerHandler.java b/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
+index 949cff1..b9247b8 100644
+--- a/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
++++ b/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
+@@ -6,6 +6,7 @@ package net.minecraft.src;
+ import java.io.PrintStream;
+ import java.util.List;
+ import java.util.logging.Logger;
++import com.vanillage.minecraftalphaserver.InventoryPlayerChecks;//Mod: Inventory player checks
+ import net.minecraft.server.MinecraftServer;
+ 
+ public class NetServerHandler extends NetHandler
+@@ -23,6 +24,7 @@ public class NetServerHandler extends NetHandler
+         networkmanager.setNetHandler(this);
+         playerEntity = entityplayermp;
+         entityplayermp.field_421_a = this;
++        inventoryPlayerChecks = new InventoryPlayerChecks(entityplayermp);//Mod: Inventory player checks
+     }
+ 
+     public void tick() {func_42_a();}//Mod: Obfuscation helpers
+@@ -461,6 +463,10 @@ public class NetServerHandler extends NetHandler
+ 
+     public void handlePlayerInventory(Packet5PlayerInventory packet5playerinventory)
+     {
++        if(!inventoryPlayerChecks.onPlayerInventoryPacket(packet5playerinventory))//Mod: Inventory player checks
++        {//Mod: Inventory player checks
++            return;//Mod: Inventory player checks
++        }//Mod: Inventory player checks
+         if(packet5playerinventory.type == -1)
+         {
+             playerEntity.inventory.mainInventory = packet5playerinventory.stacks;
+@@ -559,5 +565,6 @@ public class NetServerHandler extends NetHandler
+     private boolean field_9006_j;
+     private ItemStack getCurrentItem() {return field_10_k;}//Mod: Obfuscation helpers
+     private ItemStack field_10_k;
++    private final InventoryPlayerChecks inventoryPlayerChecks;//Mod: Inventory player checks
+ 
+ }
