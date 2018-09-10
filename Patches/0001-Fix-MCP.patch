@@ -1,7 +1,7 @@
-From ed2a80520c0a87b87884780d17e9b0dfac1994b8 Mon Sep 17 00:00:00 2001
+From d9d8c68b78022f0a9395c1b8d38a8753ebb7a2d8 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:29:54 +0200
-Subject: [PATCH] MCP changes
+Subject: [PATCH] Fix MCP
 
 
 diff --git a/conf/client_obfuscation.txt b/conf/client_obfuscation.txt

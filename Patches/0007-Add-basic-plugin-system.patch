@@ -1,12 +1,12 @@
-From ea2fe91342e72ca62b1d78f7a3fbcf040afae1a2 Mon Sep 17 00:00:00 2001
+From d0c756b1f0004954cb262d5209ded20ca56c0df4 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
-Date: Fri, 7 Sep 2018 05:07:24 +0200
-Subject: [PATCH] Plugins
+Date: Mon, 10 Sep 2018 02:18:53 +0200
+Subject: [PATCH] Add basic plugin system
 
 
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/Plugin.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/Plugin.java
 new file mode 100644
-index 0000000..867ebca
+index 0000000..c70ecff
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/Plugin.java
 @@ -0,0 +1,22 @@
@@ -18,15 +18,15 @@ index 0000000..867ebca
 +
 +public abstract class Plugin extends SimplePlugin {
 +    private MinecraftServer minecraftServer;
-+    
++
 +    public final MinecraftServer getMinecraftServer() {
 +        return minecraftServer;
 +    }
-+    
++
 +    final void setMinecraftServer(MinecraftServer minecraftServer) {
 +        this.minecraftServer = minecraftServer;
 +    }
-+    
++
 +    @Override
 +    public final String getName() {
 +        return super.getName();
@@ -34,7 +34,7 @@ index 0000000..867ebca
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManager.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManager.java
 new file mode 100644
-index 0000000..6406d63
+index 0000000..37eb483
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManager.java
 @@ -0,0 +1,30 @@
@@ -47,22 +47,22 @@ index 0000000..6406d63
 +
 +public final class PluginManager extends SimplePluginManager<Plugin> {
 +    private final MinecraftServer minecraftServer;
-+    
++
 +    public PluginManager(MinecraftServer minecraftServer) {
 +        this.minecraftServer = minecraftServer;
 +    }
-+    
++
 +    @Override
 +    protected void enablePlugin(Plugin plugin) {
 +        plugin.setMinecraftServer(minecraftServer);
 +        super.enablePlugin(plugin);
 +    }
-+    
++
 +    @Override
 +    protected void loadPlugins(SimplePluginLoader<Plugin> pluginLoader) {
 +        super.loadPlugins(pluginLoader);
 +    }
-+    
++
 +    @Override
 +    protected void disablePlugins() {
 +        super.disablePlugins();
@@ -70,7 +70,7 @@ index 0000000..6406d63
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManagerProvider.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManagerProvider.java
 new file mode 100644
-index 0000000..043898e
+index 0000000..6abf956
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManagerProvider.java
 @@ -0,0 +1,29 @@
@@ -83,21 +83,21 @@ index 0000000..043898e
 +
 +public final class PluginManagerProvider implements SimplePluginManagerProvider<PluginManager, Plugin> {
 +    private final PluginManager pluginManager;
-+    
++
 +    public PluginManagerProvider(MinecraftServer minecraftServer) {
 +        pluginManager = new PluginManager(minecraftServer);
 +    }
-+    
++
 +    @Override
 +    public PluginManager getPluginManager() {
 +        return pluginManager;
 +    }
-+    
++
 +    @Override
 +    public void loadPlugins(SimplePluginLoader<Plugin> pluginLoader) {
 +        pluginManager.loadPlugins(pluginLoader);
 +    }
-+    
++
 +    @Override
 +    public void disablePlugins() {
 +        pluginManager.disablePlugins();
@@ -122,7 +122,7 @@ index 0000000..49c2c3f
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/plugin/JarsDirectoryPluginLoader.java b/sources/minecraft_server/com/vanillage/utils/plugin/JarsDirectoryPluginLoader.java
 new file mode 100644
-index 0000000..777172b
+index 0000000..35b36c6
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/plugin/JarsDirectoryPluginLoader.java
 @@ -0,0 +1,122 @@
@@ -139,49 +139,49 @@ index 0000000..777172b
 +import java.util.jar.JarEntry;
 +import java.util.jar.JarInputStream;
 +
-+public final class JarsDirectoryPluginLoader<T extends SimplePlugin> implements SimplePluginLoader<T> {
++public final class JarsDirectoryPluginLoader<P extends SimplePlugin> implements SimplePluginLoader<P> {
 +    private final File pluginJarsDirectory;
-+    private final Class<T> pluginClass;
-+    
-+    public JarsDirectoryPluginLoader(Class<T> pluginClass) {
++    private final Class<P> pluginClass;
++
++    public JarsDirectoryPluginLoader(Class<P> pluginClass) {
 +        this(new File("./plugins/"), pluginClass);
 +    }
-+    
-+    public JarsDirectoryPluginLoader(File pluginJarsDirectory, Class<T> pluginClass) {
++
++    public JarsDirectoryPluginLoader(File pluginJarsDirectory, Class<P> pluginClass) {
 +        if (pluginJarsDirectory == null) {
 +            throw new IllegalArgumentException("pluginJarsDirectory cannot be null");
 +        }
-+        
++
 +        if (pluginClass == null) {
 +            throw new IllegalArgumentException("pluginClass cannot be null");
 +        }
-+        
++
 +        this.pluginJarsDirectory = pluginJarsDirectory;
 +        this.pluginClass = pluginClass;
 +    }
-+    
++
 +    public File getPluginJarsDirectory() {
 +        return pluginJarsDirectory;
 +    }
-+    
-+    public Class<T> getPluginClass() {
++
++    public Class<P> getPluginClass() {
 +        return pluginClass;
 +    }
-+    
++
 +    @Override
-+    public Set<T> loadPlugins() throws MalformedURLException {
++    public Set<P> loadPlugins() throws MalformedURLException {
 +        pluginJarsDirectory.mkdirs();
 +        File[] pluginJars = pluginJarsDirectory.listFiles(new JarFilenameFilter());
-+        
++
 +        if (pluginJars == null) {
 +            return null;
 +        }
-+        
++
 +        ClassLoader classLoader = new URLClassLoader(fileArrayToURLArray(pluginJars));
-+        Set<Class<T>> pluginClasses = extractClassesFromJars(pluginJars, classLoader);
++        Set<Class<P>> pluginClasses = extractClassesFromJars(pluginJars, classLoader);
 +        return createPlugins(pluginClasses);
 +    }
-+    
++
 +    private URL[] fileArrayToURLArray(File[] files) throws MalformedURLException {
 +        URL[] urls = new URL[files.length];
 +
@@ -191,10 +191,10 @@ index 0000000..777172b
 +
 +        return urls;
 +    }
-+    
-+    private Set<Class<T>> extractClassesFromJars(File[] jars, ClassLoader classLoader) {
-+        Set<Class<T>> classes = new HashSet<>();
-+        
++
++    private Set<Class<P>> extractClassesFromJars(File[] jars, ClassLoader classLoader) {
++        Set<Class<P>> classes = new HashSet<>();
++
 +        for (File jar : jars) {
 +            try {
 +                classes.addAll(extractClassesFromJar(jar, classLoader));
@@ -203,24 +203,24 @@ index 0000000..777172b
 +                e.printStackTrace();
 +            }
 +        }
-+        
++
 +        return classes;
 +    }
-+    
++
 +    @SuppressWarnings("unchecked")
-+    private Set<Class<T>> extractClassesFromJar(File jar, ClassLoader classLoader) throws IOException {
-+        Set<Class<T>> classes = new HashSet<>();
-+        
++    private Set<Class<P>> extractClassesFromJar(File jar, ClassLoader classLoader) throws IOException {
++        Set<Class<P>> classes = new HashSet<>();
++
 +        try (JarInputStream jarInputStream = new JarInputStream(new FileInputStream(jar))) {
 +            JarEntry jarEntry;
-+            
++
 +            while ((jarEntry = jarInputStream.getNextJarEntry()) != null) {
 +                if (jarEntry.getName().toLowerCase().endsWith(".class")) {
 +                    try {
 +                        Class<?> clazz = classLoader.loadClass(jarEntry.getName().substring(0, jarEntry.getName().length() - 6).replace('/', '.'));
-+                        
++
 +                        if (pluginClass.isAssignableFrom(clazz)) {
-+                            classes.add((Class<T>) clazz);
++                            classes.add((Class<P>) clazz);
 +                        }
 +                    } catch (ClassNotFoundException e) {
 +                        System.err.println("error while loading " + jarEntry.getName() + " in " + jar.getName());
@@ -229,14 +229,14 @@ index 0000000..777172b
 +                }
 +            }
 +        }
-+        
++
 +        return classes;
 +    }
-+    
-+    private Set<T> createPlugins(Set<Class<T>> pluginClasses) {
-+        Set<T> plugins = new HashSet<>();
-+        
-+        for (Class<T> pluginClass : pluginClasses) {
++
++    private Set<P> createPlugins(Set<Class<P>> pluginClasses) {
++        Set<P> plugins = new HashSet<>();
++
++        for (Class<P> pluginClass : pluginClasses) {
 +            try {
 +                plugins.add(pluginClass.newInstance());
 +            } catch (InstantiationException | IllegalAccessException e) {
@@ -244,13 +244,13 @@ index 0000000..777172b
 +                e.printStackTrace();
 +            }
 +        }
-+        
++
 +        return plugins;
 +    }
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/plugin/SimplePlugin.java b/sources/minecraft_server/com/vanillage/utils/plugin/SimplePlugin.java
 new file mode 100644
-index 0000000..b36a210
+index 0000000..bd6bc96
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/plugin/SimplePlugin.java
 @@ -0,0 +1,33 @@
@@ -258,29 +258,29 @@ index 0000000..b36a210
 +
 +public abstract class SimplePlugin {
 +    public abstract void onEnable();
-+    
++
 +    public abstract void onDisable();
-+    
++
 +    public String getName() {
 +        return getClass().getSimpleName();
 +    }
-+    
++
 +    @Override
 +    public final boolean equals(Object obj) {
 +        if (obj == this) {
 +            return true;
 +        }
-+        
++
 +        if (!(obj instanceof SimplePlugin)) {
 +            return false;
 +        }
-+        
++
 +        String objName = ((SimplePlugin) obj).getName();
 +        String name = getName();
-+        
++
 +        return objName == name || objName != null && objName.equals(name);
 +    }
-+    
++
 +    @Override
 +    public final int hashCode() {
 +        String name = getName();
@@ -289,7 +289,7 @@ index 0000000..b36a210
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/plugin/SimplePluginLoader.java b/sources/minecraft_server/com/vanillage/utils/plugin/SimplePluginLoader.java
 new file mode 100644
-index 0000000..f00c332
+index 0000000..ccd2ba0
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/plugin/SimplePluginLoader.java
 @@ -0,0 +1,7 @@
@@ -297,12 +297,12 @@ index 0000000..f00c332
 +
 +import java.util.Set;
 +
-+public interface SimplePluginLoader<T extends SimplePlugin> {
-+    Set<T> loadPlugins() throws Exception;
++public interface SimplePluginLoader<P extends SimplePlugin> {
++    Set<P> loadPlugins() throws Exception;
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/plugin/SimplePluginManager.java b/sources/minecraft_server/com/vanillage/utils/plugin/SimplePluginManager.java
 new file mode 100644
-index 0000000..3055bc3
+index 0000000..4b0ef57
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/plugin/SimplePluginManager.java
 @@ -0,0 +1,82 @@
@@ -313,44 +313,44 @@ index 0000000..3055bc3
 +import java.util.Iterator;
 +import java.util.Set;
 +
-+public class SimplePluginManager<T extends SimplePlugin> {
-+    private final Set<T> plugins = new HashSet<>();
-+    
-+    public final Set<T> getPlugins() {
++public class SimplePluginManager<P extends SimplePlugin> {
++    private final Set<P> plugins = new HashSet<>();
++
++    public final Set<P> getPlugins() {
 +        return Collections.unmodifiableSet(plugins);
 +    }
-+    
-+    protected void enablePlugin(T plugin) {
++
++    protected void enablePlugin(P plugin) {
 +        if (plugin == null) {
 +            throw new IllegalArgumentException("plugin cannot be null");
 +        }
-+        
++
 +        if (!plugins.add(plugin)) {
 +            throw new IllegalStateException("plugin " + plugin.getName() + " already loaded");
 +        }
-+        
++
 +        plugin.onEnable();
 +    }
-+    
-+    protected void disablePlugin(T plugin) {
++
++    protected void disablePlugin(P plugin) {
 +        if (plugin == null) {
 +            throw new IllegalArgumentException("plugin cannot be null");
 +        }
-+        
++
 +        if (!plugins.remove(plugin)) {
 +            throw new IllegalStateException("plugin " + plugin.getName() + " not loaded");
 +        }
-+        
++
 +        plugin.onDisable();
 +    }
-+    
-+    protected void loadPlugins(SimplePluginLoader<T> pluginLoader) {
++
++    protected void loadPlugins(SimplePluginLoader<P> pluginLoader) {
 +        if (pluginLoader == null) {
 +            throw new IllegalArgumentException("pluginLoader cannot be null");
 +        }
-+        
-+        Set<T> plugins = null;
-+        
++
++        Set<P> plugins = null;
++
 +        try {
 +            plugins = pluginLoader.loadPlugins();
 +        } catch (Exception e) {
@@ -358,12 +358,12 @@ index 0000000..3055bc3
 +            e.printStackTrace();
 +            return;
 +        }
-+        
++
 +        if (plugins == null) {
 +            return;
 +        }
-+        
-+        for (T plugin : plugins) {
++
++        for (P plugin : plugins) {
 +            try {
 +                enablePlugin(plugin);
 +            } catch (Exception e) {
@@ -371,14 +371,14 @@ index 0000000..3055bc3
 +            }
 +        }
 +    }
-+    
++
 +    protected void disablePlugins() {
-+        Iterator<T> iterator = plugins.iterator();
-+        
++        Iterator<P> iterator = plugins.iterator();
++
 +        while (iterator.hasNext()) {
-+            T plugin = iterator.next();
++            P plugin = iterator.next();
 +            iterator.remove();
-+            
++
 +            try {
 +                plugin.onDisable();
 +            } catch (Exception e) {
@@ -390,7 +390,7 @@ index 0000000..3055bc3
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/plugin/SimplePluginManagerProvider.java b/sources/minecraft_server/com/vanillage/utils/plugin/SimplePluginManagerProvider.java
 new file mode 100644
-index 0000000..8289cca
+index 0000000..2b46f36
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/plugin/SimplePluginManagerProvider.java
 @@ -0,0 +1,9 @@
@@ -398,23 +398,23 @@ index 0000000..8289cca
 +
 +public interface SimplePluginManagerProvider<M extends SimplePluginManager<P>, P extends SimplePlugin> {
 +    M getPluginManager();
-+    
++
 +    void loadPlugins(SimplePluginLoader<P> pluginLoader);
-+    
++
 +    void disablePlugins();
 +}
 diff --git a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
-index 2fc71ef..e89c164 100644
+index bc5ecb7..69d0a7f 100644
 --- a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
 +++ b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
 @@ -4,6 +4,10 @@
  
  package net.minecraft.server;
  
-+import com.vanillage.minecraftalphaserver.plugin.Plugin;//Mod: Plugins
-+import com.vanillage.minecraftalphaserver.plugin.PluginManager;//Mod: Plugins
-+import com.vanillage.minecraftalphaserver.plugin.PluginManagerProvider;//Mod: Plugins
-+import com.vanillage.utils.plugin.JarsDirectoryPluginLoader;//Mod: Plugins
++import com.vanillage.minecraftalphaserver.plugin.Plugin;//Mod: Add basic plugin system
++import com.vanillage.minecraftalphaserver.plugin.PluginManager;//Mod: Add basic plugin system
++import com.vanillage.minecraftalphaserver.plugin.PluginManagerProvider;//Mod: Add basic plugin system
++import com.vanillage.utils.plugin.JarsDirectoryPluginLoader;//Mod: Add basic plugin system
  import net.minecraft.src.AxisAlignedBB;
  import net.minecraft.src.ChunkProviderServer;
  import net.minecraft.src.ConsoleLogManager;
@@ -422,9 +422,9 @@ index 2fc71ef..e89c164 100644
          String s1 = propertyManagerObj.getStringProperty("level-name", "world");
          logger.info((new StringBuilder()).append("Preparing level \"").append(s1).append("\"").toString());
          func_6017_c(s1);
-+        pluginManagerProvider = new PluginManagerProvider(this);//Mod: Plugins
-+        pluginManager = pluginManagerProvider.getPluginManager();//Mod: Plugins
-+        pluginManagerProvider.loadPlugins(new JarsDirectoryPluginLoader<>(Plugin.class));//Mod: Plugins
++        pluginManagerProvider = new PluginManagerProvider(this);//Mod: Add basic plugin system
++        pluginManager = pluginManagerProvider.getPluginManager();//Mod: Add basic plugin system
++        pluginManagerProvider.loadPlugins(new JarsDirectoryPluginLoader<>(Plugin.class));//Mod: Add basic plugin system
          logger.info("Done! For help, type \"help\" or \"?\"");
          return true;
      }
@@ -432,7 +432,7 @@ index 2fc71ef..e89c164 100644
      private void func_6013_g()
      {
          logger.info("Stopping server");
-+        pluginManagerProvider.disablePlugins();//Mod: Plugins
++        pluginManagerProvider.disablePlugins();//Mod: Add basic plugin system
          if(configManager != null)
          {
              configManager.savePlayerStates();
@@ -440,11 +440,11 @@ index 2fc71ef..e89c164 100644
      {
          return minecraftserver.field_6025_n;
      }
-+//Mod: Plugins
-+    public final PluginManager getPluginManager()//Mod: Plugins
-+    {//Mod: Plugins
-+        return pluginManager;//Mod: Plugins
-+    }//Mod: Plugins
++//Mod: Add basic plugin system
++    public final PluginManager getPluginManager()//Mod: Add basic plugin system
++    {//Mod: Add basic plugin system
++        return pluginManager;//Mod: Add basic plugin system
++    }//Mod: Add basic plugin system
  
      public static Logger logger = Logger.getLogger("Minecraft");
      public static HashMap field_6037_b = new HashMap();
@@ -452,7 +452,7 @@ index 2fc71ef..e89c164 100644
      public boolean onlineMode;
      public boolean noAnimals;
      public boolean field_9011_n;
-+    private PluginManagerProvider pluginManagerProvider;//Mod: Plugins
-+    private PluginManager pluginManager;//Mod: Plugins
++    private PluginManagerProvider pluginManagerProvider;//Mod: Add basic plugin system
++    private PluginManager pluginManager;//Mod: Add basic plugin system
  
  }

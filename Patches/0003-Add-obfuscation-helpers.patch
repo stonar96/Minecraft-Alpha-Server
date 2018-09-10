@@ -1,42 +1,42 @@
-From c41e5a7045bace1369c3ac92d60bda09af4789a4 Mon Sep 17 00:00:00 2001
+From 7c9e9a2d5f027af4beac51d2166621b9b6d590cd Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:46:47 +0200
-Subject: [PATCH] Obfuscation helpers
+Subject: [PATCH] Add obfuscation helpers
 
 
 diff --git a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
-index b90ce6c..2fc71ef 100644
+index b90ce6c..bc5ecb7 100644
 --- a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
 +++ b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
 @@ -55,6 +55,7 @@ public class MinecraftServer
          new ThreadSleepForever(this);
      }
  
-+    private boolean start() throws UnknownHostException {return func_6008_d();}//Mod: Obfuscation helpers
++    private boolean start() throws UnknownHostException {return func_6008_d();}//Mod: Add obfuscation helpers
      private boolean func_6008_d() throws UnknownHostException
      {
          ThreadCommandReader threadcommandreader = new ThreadCommandReader(this);
 diff --git a/sources/minecraft_server/net/minecraft/src/EntityPlayerMP.java b/sources/minecraft_server/net/minecraft/src/EntityPlayerMP.java
-index 5bbda4e..e82b211 100644
+index 5bbda4e..ab1dab5 100644
 --- a/sources/minecraft_server/net/minecraft/src/EntityPlayerMP.java
 +++ b/sources/minecraft_server/net/minecraft/src/EntityPlayerMP.java
 @@ -182,6 +182,7 @@ public class EntityPlayerMP extends EntityPlayer
          return field_12012_al;
      }
  
-+    public NetServerHandler getNetServerHandler() {return field_421_a;}//Mod: Obfuscation helpers
++    public NetServerHandler getNetServerHandler() {return field_421_a;}//Mod: Add obfuscation helpers
      public NetServerHandler field_421_a;
      public MinecraftServer mcServer;
      public ItemInWorldManager field_425_ad;
 diff --git a/sources/minecraft_server/net/minecraft/src/NetServerHandler.java b/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
-index 1941b32..288f9cb 100644
+index 1941b32..5b0e304 100644
 --- a/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
 +++ b/sources/minecraft_server/net/minecraft/src/NetServerHandler.java
 @@ -25,6 +25,7 @@ public class NetServerHandler extends NetHandler
          entityplayermp.field_421_a = this;
      }
  
-+    public void tick() {func_42_a();}//Mod: Obfuscation helpers
++    public void tick() {func_42_a();}//Mod: Add obfuscation helpers
      public void func_42_a()
      {
          netManager.processReadPackets();
@@ -44,7 +44,7 @@ index 1941b32..288f9cb 100644
          }
      }
  
-+    public void kick(String reason) {func_43_c(reason);}//Mod: Obfuscation helpers
++    public void kick(String reason) {func_43_c(reason);}//Mod: Add obfuscation helpers
      public void func_43_c(String s)
      {
          netManager.addToSendQueue(new Packet255KickDisconnect(s));
@@ -52,7 +52,7 @@ index 1941b32..288f9cb 100644
          }
      }
  
-+    public void teleport(double posX, double posY, double posZ, float rotationYaw, float rotationPitch) {func_41_a(posX, posY, posZ, rotationYaw, rotationPitch);}//Mod: Obfuscation helpers
++    public void teleport(double posX, double posY, double posZ, float rotationYaw, float rotationPitch) {func_41_a(posX, posY, posZ, rotationYaw, rotationPitch);}//Mod: Add obfuscation helpers
      public void func_41_a(double d, double d1, double d2, float f, 
              float f1)
      {
@@ -60,7 +60,7 @@ index 1941b32..288f9cb 100644
          field_18_c = true;
      }
  
-+    public void handleInvalidPacket(Packet packet) {func_6001_a(packet);}//Mod: Obfuscation helpers
++    public void handleInvalidPacket(Packet packet) {func_6001_a(packet);}//Mod: Add obfuscation helpers
      public void func_6001_a(Packet packet)
      {
          logger.warning((new StringBuilder()).append(getClass()).append(" wasn't prepared to deal with a ").append(packet.getClass()).toString());
@@ -68,7 +68,7 @@ index 1941b32..288f9cb 100644
          }
      }
  
-+    private void handleCommand(String command) {func_4010_d(command);}//Mod: Obfuscation helpers
++    private void handleCommand(String command) {func_4010_d(command);}//Mod: Add obfuscation helpers
      private void func_4010_d(String s)
      {
          if(s.toLowerCase().startsWith("/me "))
@@ -76,7 +76,7 @@ index 1941b32..288f9cb 100644
          netManager.networkShutdown("Quitting");
      }
  
-+    public int getNumChunkDataPackets() {return func_38_b();}//Mod: Obfuscation helpers
++    public int getNumChunkDataPackets() {return func_38_b();}//Mod: Add obfuscation helpers
      public int func_38_b()
      {
          return netManager.getNumChunkDataPackets();
@@ -84,7 +84,7 @@ index 1941b32..288f9cb 100644
          }
      }
  
-+    public void sendInventory() {func_40_d();}//Mod: Obfuscation helpers
++    public void sendInventory() {func_40_d();}//Mod: Add obfuscation helpers
      public void func_40_d()
      {
          netManager.addToSendQueue(new Packet5PlayerInventory(-1, playerEntity.inventory.mainInventory));
@@ -92,7 +92,7 @@ index 1941b32..288f9cb 100644
          }
      }
  
-+    public void handleEntityInteraction(Packet7 packet) {func_6006_a(packet);}//Mod: Obfuscation helpers
++    public void handleEntityInteraction(Packet7 packet) {func_6006_a(packet);}//Mod: Add obfuscation helpers
      public void func_6006_a(Packet7 packet7)
      {
          Entity entity = mcServer.worldMngr.func_6158_a(packet7.field_9018_b);
@@ -100,7 +100,7 @@ index 1941b32..288f9cb 100644
          }
      }
  
-+    public void handleRespawn(Packet9 packet) {func_9002_a(packet);}//Mod: Obfuscation helpers
++    public void handleRespawn(Packet9 packet) {func_9002_a(packet);}//Mod: Add obfuscation helpers
      public void func_9002_a(Packet9 packet9)
      {
          if(playerEntity.field_9109_aQ > 0)
@@ -108,21 +108,21 @@ index 1941b32..288f9cb 100644
  
      public static Logger logger = Logger.getLogger("Minecraft");
      public NetworkManager netManager;
-+    public boolean isDisconnected() {return field_18_c;}//Mod: Obfuscation helpers
++    public boolean isDisconnected() {return field_18_c;}//Mod: Add obfuscation helpers
      public boolean field_18_c;
      private MinecraftServer mcServer;
      private EntityPlayerMP playerEntity;
-+    private int getTicks() {return field_15_f;}//Mod: Obfuscation helpers
++    private int getTicks() {return field_15_f;}//Mod: Add obfuscation helpers
      private int field_15_f;
-+    private double getPrevPosX() {return field_9009_g;}//Mod: Obfuscation helpers
++    private double getPrevPosX() {return field_9009_g;}//Mod: Add obfuscation helpers
      private double field_9009_g;
-+    private double getPrevPosY() {return field_9008_h;}//Mod: Obfuscation helpers
++    private double getPrevPosY() {return field_9008_h;}//Mod: Add obfuscation helpers
      private double field_9008_h;
-+    private double getPrevPosZ() {return field_9007_i;}//Mod: Obfuscation helpers
++    private double getPrevPosZ() {return field_9007_i;}//Mod: Add obfuscation helpers
      private double field_9007_i;
-+    private boolean getTeleportMoveFlag() {return field_9006_j;}//Mod: Obfuscation helpers
++    private boolean getTeleportMoveFlag() {return field_9006_j;}//Mod: Add obfuscation helpers
      private boolean field_9006_j;
-+    private ItemStack getCurrentItem() {return field_10_k;}//Mod: Obfuscation helpers
++    private ItemStack getCurrentItem() {return field_10_k;}//Mod: Add obfuscation helpers
      private ItemStack field_10_k;
  
  }
