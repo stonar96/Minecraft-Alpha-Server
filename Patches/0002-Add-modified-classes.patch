@@ -1,14 +1,14 @@
-From a60cf4ac3dae1273e174b76341cae4ccc65f438f Mon Sep 17 00:00:00 2001
+From 5516982f0e55c76141a2a91d4f869c85d4231f33 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:34:44 +0200
 Subject: [PATCH] Add modified classes
 
 
 diff --git a/conf/server_obfuscation.txt b/conf/server_obfuscation.txt
-index e69de29..2edb01f 100644
+index e69de29..7c31f50 100644
 --- a/conf/server_obfuscation.txt
 +++ b/conf/server_obfuscation.txt
-@@ -0,0 +1,17 @@
+@@ -0,0 +1,23 @@
 +MinecraftServer
 +EntityPlayerMP
 +InventoryPlayer
@@ -17,9 +17,15 @@ index e69de29..2edb01f 100644
 +NetServerHandler
 +com.vanillage.minecraftalphaserver.InventoryPlayerChecks.class
 +com.vanillage.minecraftalphaserver.ItemDamage.class
++com.vanillage.minecraftalphaserver.event.TestEvent.class
++com.vanillage.minecraftalphaserver.event.TestListener.class
 +com.vanillage.minecraftalphaserver.plugin.Plugin.class
 +com.vanillage.minecraftalphaserver.plugin.PluginManager.class
 +com.vanillage.minecraftalphaserver.plugin.PluginManagerProvider.class
++com.vanillage.utils.ClassToInstanceListHashMap.class
++com.vanillage.utils.event.EventManager.class
++com.vanillage.utils.event.Event.class
++com.vanillage.utils.event.Listener.class
 +com.vanillage.utils.plugin.JarFilenameFilter.class
 +com.vanillage.utils.plugin.JarsDirectoryPluginLoader.class
 +com.vanillage.utils.plugin.SimplePlugin.class

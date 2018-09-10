@@ -1,4 +1,4 @@
-From 5f80c36970c178831852bd17a9d02beb86f40e56 Mon Sep 17 00:00:00 2001
+From 42eaab666f1c8310c277b59fa9d4b1bb32d7533e Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Tue, 3 Oct 2017 17:39:19 +0200
 Subject: [PATCH] Add username pattern check

@@ -1,0 +1,206 @@
+From e796f588ef3a71fe1e572add56f0edcabf1ebde0 Mon Sep 17 00:00:00 2001
+From: stonar96 <minecraft.stonar96@gmail.com>
+Date: Sun, 9 Sep 2018 03:39:59 +0200
+Subject: [PATCH] Add basic event system
+
+
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java
+new file mode 100644
+index 0000000..4754f54
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java
+@@ -0,0 +1,22 @@
++package com.vanillage.minecraftalphaserver.event;
++
++import com.vanillage.utils.event.Event;
++
++import net.minecraft.server.MinecraftServer;
++
++public final class TestEvent implements Event<TestListener, TestEvent> {
++    private final MinecraftServer minecraftServer;
++
++    public TestEvent(MinecraftServer minecraftServer) {
++        this.minecraftServer = minecraftServer;
++    }
++
++    public MinecraftServer getMinecraftServer() {
++        return minecraftServer;
++    }
++
++    @Override
++    public Class<TestListener> getListenerClass() {
++        return TestListener.class;
++    }
++}
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestListener.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestListener.java
+new file mode 100644
+index 0000000..eaf8e69
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestListener.java
+@@ -0,0 +1,10 @@
++package com.vanillage.minecraftalphaserver.event;
++
++import com.vanillage.utils.event.Listener;
++
++public abstract class TestListener extends Listener<TestListener, TestEvent> {
++    @Override
++    protected final Class<TestListener> getListenerClass() {
++        return TestListener.class;
++    }
++}
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManager.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManager.java
+index 37eb483..cddb7df 100644
+--- a/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManager.java
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/plugin/PluginManager.java
+@@ -1,5 +1,6 @@
+ package com.vanillage.minecraftalphaserver.plugin;
+ 
++import com.vanillage.utils.event.EventManager;
+ import com.vanillage.utils.plugin.SimplePluginLoader;
+ import com.vanillage.utils.plugin.SimplePluginManager;
+ 
+@@ -7,11 +8,16 @@ import net.minecraft.server.MinecraftServer;
+ 
+ public final class PluginManager extends SimplePluginManager<Plugin> {
+     private final MinecraftServer minecraftServer;
++    private final EventManager eventManager = new EventManager();
+ 
+     public PluginManager(MinecraftServer minecraftServer) {
+         this.minecraftServer = minecraftServer;
+     }
+ 
++    public EventManager getEventManager() {
++        return eventManager;
++    }
++
+     @Override
+     protected void enablePlugin(Plugin plugin) {
+         plugin.setMinecraftServer(minecraftServer);
+diff --git a/sources/minecraft_server/com/vanillage/utils/ClassToInstanceListHashMap.java b/sources/minecraft_server/com/vanillage/utils/ClassToInstanceListHashMap.java
+new file mode 100644
+index 0000000..20917dd
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/utils/ClassToInstanceListHashMap.java
+@@ -0,0 +1,19 @@
++package com.vanillage.utils;
++
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++public class ClassToInstanceListHashMap {
++    private final Map<Class<?>, List<?>> map = new HashMap<>();
++
++    @SuppressWarnings("unchecked")
++    public <T> List<T> put(Class<T> key, List<T> value) {
++        return (List<T>) map.put(key, value);
++    }
++
++    @SuppressWarnings("unchecked")
++    public <T> List<T> get(Class<T> key) {
++        return (List<T>) map.get(key);
++    }
++}
+diff --git a/sources/minecraft_server/com/vanillage/utils/event/Event.java b/sources/minecraft_server/com/vanillage/utils/event/Event.java
+new file mode 100644
+index 0000000..52d9218
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/utils/event/Event.java
+@@ -0,0 +1,5 @@
++package com.vanillage.utils.event;
++
++public interface Event<L extends Listener<L, SELF>, SELF extends Event<L, SELF>> {
++    Class<L> getListenerClass();
++}
+diff --git a/sources/minecraft_server/com/vanillage/utils/event/EventManager.java b/sources/minecraft_server/com/vanillage/utils/event/EventManager.java
+new file mode 100644
+index 0000000..08965d7
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/utils/event/EventManager.java
+@@ -0,0 +1,49 @@
++package com.vanillage.utils.event;
++
++import java.util.LinkedList;
++import java.util.List;
++import java.util.ListIterator;
++
++import com.vanillage.utils.ClassToInstanceListHashMap;
++
++public class EventManager {
++    private final ClassToInstanceListHashMap listeners = new ClassToInstanceListHashMap();
++
++    public <L extends Listener<L, E>, E extends Event<L, E>> void registerListener(L listener) {
++        List<L> listeners = this.listeners.get(listener.getListenerClass());
++
++        if (listeners == null) {
++            listeners = new LinkedList<>();
++            this.listeners.put(listener.getListenerClass(), listeners);
++        }
++
++        ListIterator<L> iterator = listeners.listIterator();
++
++        while (iterator.hasNext() && iterator.next().getPriority() <= listener.getPriority()) {
++
++        }
++
++        if (iterator.hasPrevious()) {
++            iterator.previous();
++        }
++
++        iterator.add(listener);
++    }
++
++    public <L extends Listener<L, E>, E extends Event<L, E>> void callEvent(E event) {
++        List<L> listeners = this.listeners.get(event.getListenerClass());
++
++        if (listeners == null) {
++            return;
++        }
++
++        for (L listener : listeners) {
++            try {
++                listener.onEvent(event);
++            } catch (Exception e) {
++                System.err.println("error while calling event");
++                e.printStackTrace();
++            }
++        }
++    }
++}
+diff --git a/sources/minecraft_server/com/vanillage/utils/event/Listener.java b/sources/minecraft_server/com/vanillage/utils/event/Listener.java
+new file mode 100644
+index 0000000..16af987
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/utils/event/Listener.java
+@@ -0,0 +1,11 @@
++package com.vanillage.utils.event;
++
++public abstract class Listener<SELF extends Listener<SELF, E>, E extends Event<SELF, E>> {
++    protected abstract void onEvent(E event);
++
++    protected abstract Class<SELF> getListenerClass();
++
++    protected int getPriority() {
++        return 0;
++    }
++}
+diff --git a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
+index 69d0a7f..3313310 100644
+--- a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
++++ b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
+@@ -4,6 +4,7 @@
+ 
+ package net.minecraft.server;
+ 
++import com.vanillage.minecraftalphaserver.event.TestEvent;//Mod: Add basic event system
+ import com.vanillage.minecraftalphaserver.plugin.Plugin;//Mod: Add basic plugin system
+ import com.vanillage.minecraftalphaserver.plugin.PluginManager;//Mod: Add basic plugin system
+ import com.vanillage.minecraftalphaserver.plugin.PluginManagerProvider;//Mod: Add basic plugin system
+@@ -111,6 +112,7 @@ public class MinecraftServer
+         pluginManagerProvider = new PluginManagerProvider(this);//Mod: Add basic plugin system
+         pluginManager = pluginManagerProvider.getPluginManager();//Mod: Add basic plugin system
+         pluginManagerProvider.loadPlugins(new JarsDirectoryPluginLoader<>(Plugin.class));//Mod: Add basic plugin system
++        pluginManager.getEventManager().callEvent(new TestEvent(this));//Mod: Add basic event system
+         logger.info("Done! For help, type \"help\" or \"?\"");
+         return true;
+     }
