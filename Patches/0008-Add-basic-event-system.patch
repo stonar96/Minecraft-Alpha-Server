@@ -1,4 +1,4 @@
-From e796f588ef3a71fe1e572add56f0edcabf1ebde0 Mon Sep 17 00:00:00 2001
+From b0da50aaf18c204a0df1834634b7efad5a7e3dc8 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 9 Sep 2018 03:39:59 +0200
 Subject: [PATCH] Add basic event system
@@ -114,10 +114,10 @@ index 0000000..52d9218
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/event/EventManager.java b/sources/minecraft_server/com/vanillage/utils/event/EventManager.java
 new file mode 100644
-index 0000000..08965d7
+index 0000000..25716b3
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/event/EventManager.java
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,50 @@
 +package com.vanillage.utils.event;
 +
 +import java.util.LinkedList;
@@ -138,12 +138,13 @@ index 0000000..08965d7
 +        }
 +
 +        ListIterator<L> iterator = listeners.listIterator();
++        boolean higherPriority = true;
 +
-+        while (iterator.hasNext() && iterator.next().getPriority() <= listener.getPriority()) {
++        while (iterator.hasNext() && (higherPriority = iterator.next().getPriority() <= listener.getPriority())) {
 +
 +        }
 +
-+        if (iterator.hasPrevious()) {
++        if (!higherPriority) {
 +            iterator.previous();
 +        }
 +
