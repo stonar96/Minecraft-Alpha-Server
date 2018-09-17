@@ -1,4 +1,4 @@
-From f880f3199a4ac5e7017edd4a73deadffbc9442c5 Mon Sep 17 00:00:00 2001
+From e8094692647f0b9bb3cfe6c0982f0b78d3ad4dd1 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 9 Sep 2018 03:39:59 +0200
 Subject: [PATCH] Add basic event system
@@ -79,10 +79,10 @@ index 0000000..9cd8c89
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/ResultablePlayerEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/ResultablePlayerEvent.java
 new file mode 100644
-index 0000000..23f515f
+index 0000000..35d12e5
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/ResultablePlayerEvent.java
-@@ -0,0 +1,112 @@
+@@ -0,0 +1,117 @@
 +package com.vanillage.minecraftalphaserver.event;
 +
 +import com.vanillage.utils.event.Event;
@@ -193,6 +193,11 @@ index 0000000..23f515f
 +    @Override
 +    public Result denyIfHandled() {
 +        return denyIf(Result.HANDLE);
++    }
++
++    @Override
++    public Result denyIfAllowed() {
++        return denyIf(Result.ALLOW);
 +    }
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java
@@ -485,10 +490,10 @@ index 0000000..5c03142
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/event/ResultableEvent.java b/sources/minecraft_server/com/vanillage/utils/event/ResultableEvent.java
 new file mode 100644
-index 0000000..e836eed
+index 0000000..be56927
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/event/ResultableEvent.java
-@@ -0,0 +1,108 @@
+@@ -0,0 +1,113 @@
 +package com.vanillage.utils.event;
 +
 +public abstract class ResultableEvent<L extends Listener<L, SELF>, SELF extends Event<L, SELF>> extends Event<L, SELF> implements Resultable {
@@ -595,6 +600,11 @@ index 0000000..e836eed
 +    @Override
 +    public Result denyIfHandled() {
 +        return denyIf(Result.HANDLE);
++    }
++
++    @Override
++    public Result denyIfAllowed() {
++        return denyIf(Result.ALLOW);
 +    }
 +}
 diff --git a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java
