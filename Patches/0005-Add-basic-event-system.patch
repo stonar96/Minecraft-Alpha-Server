@@ -1,4 +1,4 @@
-From 67a5b53f727e05b1855dfc538832a4396b7a4227 Mon Sep 17 00:00:00 2001
+From ffbd4716ac60eb8912d4ea5758d4467d06634088 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 9 Sep 2018 03:39:59 +0200
 Subject: [PATCH] Add basic event system
@@ -101,6 +101,64 @@ index 0000000..20917dd
 +        return (List<T>) map.get(key);
 +    }
 +}
+diff --git a/sources/minecraft_server/com/vanillage/utils/event/Cancelable.java b/sources/minecraft_server/com/vanillage/utils/event/Cancelable.java
+new file mode 100644
+index 0000000..33bd3b0
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/utils/event/Cancelable.java
+@@ -0,0 +1,11 @@
++package com.vanillage.utils.event;
++
++public interface Cancelable {
++    boolean isCanceled();
++
++    boolean setCanceled(boolean canceled);
++
++    boolean cancel();
++
++    boolean uncancel();
++}
+diff --git a/sources/minecraft_server/com/vanillage/utils/event/CancelableEvent.java b/sources/minecraft_server/com/vanillage/utils/event/CancelableEvent.java
+new file mode 100644
+index 0000000..dbe72ff
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/utils/event/CancelableEvent.java
+@@ -0,0 +1,35 @@
++package com.vanillage.utils.event;
++
++public abstract class CancelableEvent<L extends Listener<L, SELF>, SELF extends Event<L, SELF>> extends Event<L, SELF> implements Cancelable {
++    private boolean canceled;
++
++    public CancelableEvent() {
++        this(false);
++    }
++
++    public CancelableEvent(boolean canceled) {
++        this.canceled = canceled;
++    }
++
++    @Override
++    public boolean isCanceled() {
++        return canceled;
++    }
++
++    @Override
++    public boolean setCanceled(boolean canceled) {
++        boolean previous = this.canceled;
++        this.canceled = canceled;
++        return previous;
++    }
++
++    @Override
++    public boolean cancel() {
++        return setCanceled(true);
++    }
++
++    @Override
++    public boolean uncancel() {
++        return setCanceled(false);
++    }
++}
 diff --git a/sources/minecraft_server/com/vanillage/utils/event/Event.java b/sources/minecraft_server/com/vanillage/utils/event/Event.java
 new file mode 100644
 index 0000000..8809ec2
@@ -183,6 +241,169 @@ index 0000000..16af987
 +
 +    protected int getPriority() {
 +        return 0;
++    }
++}
+diff --git a/sources/minecraft_server/com/vanillage/utils/event/Resultable.java b/sources/minecraft_server/com/vanillage/utils/event/Resultable.java
+new file mode 100644
+index 0000000..5c03142
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/utils/event/Resultable.java
+@@ -0,0 +1,43 @@
++package com.vanillage.utils.event;
++
++public interface Resultable {
++    Result getResult();
++
++    Result setResult(Result result);
++
++    boolean isHandled();
++
++    boolean isAllowed();
++
++    boolean isDenied();
++
++    Result handle();
++
++    Result allow();
++
++    Result deny();
++
++    Result setResultFromTo(Result from, Result to);
++
++    Result handleIf(Result result);
++
++    Result allowIf(Result result);
++
++    Result denyIf(Result result);
++
++    Result handleIfAllowed();
++
++    Result handleIfDenied();
++
++    Result allowIfHandled();
++
++    Result allowIfDenied();
++
++    Result denyIfHandled();
++
++    Result denyIfAllowed();
++
++    public enum Result {
++        HANDLE, ALLOW, DENY
++    }
++}
+diff --git a/sources/minecraft_server/com/vanillage/utils/event/ResultableEvent.java b/sources/minecraft_server/com/vanillage/utils/event/ResultableEvent.java
+new file mode 100644
+index 0000000..e836eed
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/utils/event/ResultableEvent.java
+@@ -0,0 +1,108 @@
++package com.vanillage.utils.event;
++
++public abstract class ResultableEvent<L extends Listener<L, SELF>, SELF extends Event<L, SELF>> extends Event<L, SELF> implements Resultable {
++    private Result result;
++
++    public ResultableEvent() {
++        this(Result.HANDLE);
++    }
++
++    public ResultableEvent(Result result) {
++        if (result == null) {
++            throw new IllegalArgumentException("result cannot be null");
++        }
++
++        this.result = result;
++    }
++
++    @Override
++    public Result getResult() {
++        return result;
++    }
++
++    @Override
++    public Result setResult(Result result) {
++        if (result == null) {
++            throw new IllegalArgumentException("result cannot be null");
++        }
++
++        Result previous = this.result;
++        this.result = result;
++        return previous;
++    }
++
++    @Override
++    public boolean isHandled() {
++        return result == Result.HANDLE;
++    }
++
++    @Override
++    public boolean isAllowed() {
++        return result == Result.ALLOW;
++    }
++
++    @Override
++    public boolean isDenied() {
++        return result == Result.DENY;
++    }
++
++    @Override
++    public Result handle() {
++        return setResult(Result.HANDLE);
++    }
++
++    @Override
++    public Result allow() {
++        return setResult(Result.ALLOW);
++    }
++
++    @Override
++    public Result deny() {
++        return setResult(Result.DENY);
++    }
++
++    @Override
++    public Result setResultFromTo(Result from, Result to) {
++        return result == from ? setResult(to) : result;
++    }
++
++    @Override
++    public Result handleIf(Result result) {
++        return setResultFromTo(result, Result.HANDLE);
++    }
++
++    @Override
++    public Result allowIf(Result result) {
++        return setResultFromTo(result, Result.ALLOW);
++    }
++
++    @Override
++    public Result denyIf(Result result) {
++        return setResultFromTo(result, Result.DENY);
++    }
++
++    @Override
++    public Result handleIfAllowed() {
++        return handleIf(Result.ALLOW);
++    }
++
++    @Override
++    public Result handleIfDenied() {
++        return handleIf(Result.DENY);
++    }
++
++    @Override
++    public Result allowIfHandled() {
++        return allowIf(Result.HANDLE);
++    }
++
++    @Override
++    public Result allowIfDenied() {
++        return allowIf(Result.DENY);
++    }
++
++    @Override
++    public Result denyIfHandled() {
++        return denyIf(Result.HANDLE);
 +    }
 +}
 diff --git a/sources/minecraft_server/net/minecraft/server/MinecraftServer.java b/sources/minecraft_server/net/minecraft/server/MinecraftServer.java

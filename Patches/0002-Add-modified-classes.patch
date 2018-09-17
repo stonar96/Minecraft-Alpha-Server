@@ -1,14 +1,14 @@
-From 9380616688da20b01740ed74a4ac82bff2fece4f Mon Sep 17 00:00:00 2001
+From aab940319d5e39cefc8049e60ddda193359e5a19 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:34:44 +0200
 Subject: [PATCH] Add modified classes
 
 
 diff --git a/conf/server_obfuscation.txt b/conf/server_obfuscation.txt
-index e69de29..cffa184 100644
+index e69de29..62d9d2a 100644
 --- a/conf/server_obfuscation.txt
 +++ b/conf/server_obfuscation.txt
-@@ -0,0 +1,18 @@
+@@ -0,0 +1,23 @@
 +MinecraftServer
 +EntityPlayerMP
 +NetServerHandler
@@ -18,9 +18,14 @@ index e69de29..cffa184 100644
 +com.vanillage.minecraftalphaserver.plugin.PluginManager.class
 +com.vanillage.minecraftalphaserver.plugin.PluginManagerProvider.class
 +com.vanillage.utils.ClassToInstanceListHashMap.class
++com.vanillage.utils.event.Cancelable.class
++com.vanillage.utils.event.CancelableEvent.class
 +com.vanillage.utils.event.Event.class
 +com.vanillage.utils.event.EventManager.class
 +com.vanillage.utils.event.Listener.class
++com.vanillage.utils.event.Resultable$Result.class
++com.vanillage.utils.event.Resultable.class
++com.vanillage.utils.event.ResultableEvent.class
 +com.vanillage.utils.plugin.JarFilenameFilter.class
 +com.vanillage.utils.plugin.JarsDirectoryPluginLoader.class
 +com.vanillage.utils.plugin.SimplePlugin.class
