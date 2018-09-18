@@ -1,0 +1,147 @@
+From c3c3ab5e723a2a71036d5e558d4446b62656a350 Mon Sep 17 00:00:00 2001
+From: stonar96 <minecraft.stonar96@gmail.com>
+Date: Tue, 18 Sep 2018 03:40:44 +0200
+Subject: [PATCH] Add player login event
+
+
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoginEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoginEvent.java
+new file mode 100644
+index 0000000..80b4656
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoginEvent.java
+@@ -0,0 +1,60 @@
++package com.vanillage.minecraftalphaserver.event;
++
++import com.vanillage.utils.event.ResultableEvent;
++
++import net.minecraft.src.NetLoginHandler;
++import net.minecraft.src.Packet1Login;
++
++public final class PlayerLoginEvent extends ResultableEvent<PlayerLoginListener, PlayerLoginEvent> {
++    private final NetLoginHandler netLoginHandler;
++    private final Packet1Login packet;
++    private String kickReason = "";
++    private Boolean onlineMode = null;
++    private Runnable onlineModeLoginVerifier = null;
++
++    public PlayerLoginEvent(NetLoginHandler netLoginHandler, Packet1Login packet) {
++        this.netLoginHandler = netLoginHandler;
++        this.packet = packet;
++    }
++
++    public NetLoginHandler getNetLoginHandler() {
++        return netLoginHandler;
++    }
++
++    public Packet1Login getPacket() {
++        return packet;
++    }
++
++    public String getKickReason() {
++        return kickReason;
++    }
++
++    public void setKickReason(String kickReason) {
++        if (kickReason == null) {
++            throw new IllegalArgumentException("kickReason cannot be null");
++        }
++
++        this.kickReason = kickReason;
++    }
++
++    public Boolean getOnlineMode() {
++        return onlineMode;
++    }
++
++    public void setOnlineMode(Boolean onlineMode) {
++        this.onlineMode = onlineMode;
++    }
++
++    public Runnable getOnlineModeLoginVerifier() {
++        return onlineModeLoginVerifier;
++    }
++
++    public void setOnlineModeLoginVerifier(Runnable onlineModeLoginVerifier) {
++        this.onlineModeLoginVerifier = onlineModeLoginVerifier;
++    }
++
++    @Override
++    protected Class<PlayerLoginListener> getListenerClass() {
++        return PlayerLoginListener.class;
++    }
++}
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoginListener.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoginListener.java
+new file mode 100644
+index 0000000..61c58d4
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoginListener.java
+@@ -0,0 +1,10 @@
++package com.vanillage.minecraftalphaserver.event;
++
++import com.vanillage.utils.event.Listener;
++
++public abstract class PlayerLoginListener extends Listener<PlayerLoginListener, PlayerLoginEvent> {
++    @Override
++    protected final Class<PlayerLoginListener> getListenerClass() {
++        return PlayerLoginListener.class;
++    }
++}
+diff --git a/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java b/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
+index 40a9980..14e96b0 100644
+--- a/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
++++ b/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
+@@ -3,6 +3,7 @@ package net.minecraft.src;
+ // Jad home page: http://www.kpdus.com/jad.html
+ // Decompiler options: packimports(3) braces deadcode 
+ 
++import com.vanillage.minecraftalphaserver.event.PlayerLoginEvent;//Mod: Add player login event
+ import java.io.IOException;
+ import java.net.Socket;
+ import java.util.Random;
+@@ -68,8 +69,19 @@ public class NetLoginHandler extends NetHandler
+ 
+     public void handleLogin(Packet1Login packet1login)
+     {
++        PlayerLoginEvent event = new PlayerLoginEvent(this, packet1login);//Mod: Add player login event
++        mcServer.getPluginManager().getEventManager().callEvent(event);//Mod: Add player login event
++        if(event.isDenied())//Mod: Add player login event
++        {//Mod: Add player login event
++            if(!finishedProcessing)//Mod: Add player login event
++            {//Mod: Add player login event
++                kickUser(event.getKickReason());//Mod: Add player login event
++            }//Mod: Add player login event
++            return;//Mod: Add player login event
++        }//Mod: Add player login event
+         username = packet1login.username;
+-        if(packet1login.protocolVersion != 6)
++        //if(packet1login.protocolVersion != 6)//Mc: Add player login event
++        if(!event.isAllowed() && packet1login.protocolVersion != 6)//Mod: Add player login event
+         {
+             if(packet1login.protocolVersion > 6)
+             {
+@@ -80,11 +92,24 @@ public class NetLoginHandler extends NetHandler
+             }
+             return;
+         }
+-        if(!mcServer.onlineMode)
++        //if(!mcServer.onlineMode)//Mc: Add player login event
++        if(event.getOnlineMode() != null && !event.getOnlineMode() || event.getOnlineMode() == null && !mcServer.onlineMode)//Mod: Add player login event
+         {
+             doLogin(packet1login);
+         } else
+         {
++            if(event.getOnlineModeLoginVerifier() != null)//Mod: Add player login event
++            {//Mod: Add player login event
++                try//Mod: Add player login event
++                {//Mod: Add player login event
++                    event.getOnlineModeLoginVerifier().run();//Mod: Add player login event
++                }//Mod: Add player login event
++                catch(Exception exception)//Mod: Add player login event
++                {//Mod: Add player login event
++                    exception.printStackTrace();//Mod: Add player login event
++                }//Mod: Add player login event
++                return;//Mod: Add player login event
++            }//Mod: Add player login event
+             (new ThreadLoginVerifier(this, packet1login)).start();
+         }
+     }
