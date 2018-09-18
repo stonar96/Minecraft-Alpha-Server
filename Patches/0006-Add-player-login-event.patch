@@ -1,4 +1,4 @@
-From 616f1f978c18cc0406a10793156d659232232a17 Mon Sep 17 00:00:00 2001
+From cece9e6283140457c767ffd9f9c131d330438eda Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Tue, 18 Sep 2018 03:40:44 +0200
 Subject: [PATCH] Add player login event
@@ -87,7 +87,7 @@ index 0000000..61c58d4
 +    }
 +}
 diff --git a/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java b/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
-index 40a9980..14e96b0 100644
+index 40a9980..af6ee32 100644
 --- a/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
 +++ b/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
 @@ -3,6 +3,7 @@ package net.minecraft.src;
@@ -98,18 +98,19 @@ index 40a9980..14e96b0 100644
  import java.io.IOException;
  import java.net.Socket;
  import java.util.Random;
-@@ -68,8 +69,19 @@ public class NetLoginHandler extends NetHandler
+@@ -68,8 +69,20 @@ public class NetLoginHandler extends NetHandler
  
      public void handleLogin(Packet1Login packet1login)
      {
 +        PlayerLoginEvent event = new PlayerLoginEvent(this, packet1login);//Mod: Add player login event
 +        mcServer.getPluginManager().getEventManager().callEvent(event);//Mod: Add player login event
++        if(finishedProcessing)//Mod: Add player login event
++        {//Mod: Add player login event
++            return;//Mod: Add player login event
++        }//Mod: Add player login event
 +        if(event.isDenied())//Mod: Add player login event
 +        {//Mod: Add player login event
-+            if(!finishedProcessing)//Mod: Add player login event
-+            {//Mod: Add player login event
-+                kickUser(event.getKickReason());//Mod: Add player login event
-+            }//Mod: Add player login event
++            kickUser(event.getKickReason());//Mod: Add player login event
 +            return;//Mod: Add player login event
 +        }//Mod: Add player login event
          username = packet1login.username;
@@ -119,7 +120,7 @@ index 40a9980..14e96b0 100644
          {
              if(packet1login.protocolVersion > 6)
              {
-@@ -80,11 +92,24 @@ public class NetLoginHandler extends NetHandler
+@@ -80,11 +93,24 @@ public class NetLoginHandler extends NetHandler
              }
              return;
          }
