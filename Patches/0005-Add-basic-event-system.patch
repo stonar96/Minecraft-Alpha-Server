@@ -1,4 +1,4 @@
-From 642511b7fd599860044a51daa1dc015191e87730 Mon Sep 17 00:00:00 2001
+From 6b3d344276f2dbb66268ec0b64cb4a133529f3cd Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 9 Sep 2018 03:39:59 +0200
 Subject: [PATCH] Add basic event system
@@ -6,7 +6,7 @@ Subject: [PATCH] Add basic event system
 
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/CancelablePlayerEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/CancelablePlayerEvent.java
 new file mode 100644
-index 0000000..45e2eac
+index 0000000..606562c
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/CancelablePlayerEvent.java
 @@ -0,0 +1,39 @@
@@ -28,30 +28,30 @@ index 0000000..45e2eac
 +    }
 +
 +    @Override
-+    public boolean isCanceled() {
++    public final boolean isCanceled() {
 +        return canceled;
 +    }
 +
 +    @Override
-+    public boolean setCanceled(boolean canceled) {
++    public final boolean setCanceled(boolean canceled) {
 +        boolean previous = this.canceled;
 +        this.canceled = canceled;
 +        return previous;
 +    }
 +
 +    @Override
-+    public boolean cancel() {
++    public final boolean cancel() {
 +        return setCanceled(true);
 +    }
 +
 +    @Override
-+    public boolean uncancel() {
++    public final boolean uncancel() {
 +        return setCanceled(false);
 +    }
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerEvent.java
 new file mode 100644
-index 0000000..9cd8c89
+index 0000000..6477895
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerEvent.java
 @@ -0,0 +1,22 @@
@@ -73,13 +73,13 @@ index 0000000..9cd8c89
 +        this.player = player;
 +    }
 +
-+    public EntityPlayerMP getPlayer() {
++    public final EntityPlayerMP getPlayer() {
 +        return player;
 +    }
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/ResultablePlayerEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/ResultablePlayerEvent.java
 new file mode 100644
-index 0000000..35d12e5
+index 0000000..41f0d4f
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/ResultablePlayerEvent.java
 @@ -0,0 +1,117 @@
@@ -105,12 +105,12 @@ index 0000000..35d12e5
 +    }
 +
 +    @Override
-+    public Result getResult() {
++    public final Result getResult() {
 +        return result;
 +    }
 +
 +    @Override
-+    public Result setResult(Result result) {
++    public final Result setResult(Result result) {
 +        if (result == null) {
 +            throw new IllegalArgumentException("result cannot be null");
 +        }
@@ -121,88 +121,88 @@ index 0000000..35d12e5
 +    }
 +
 +    @Override
-+    public boolean isHandled() {
++    public final boolean isHandled() {
 +        return result == Result.HANDLE;
 +    }
 +
 +    @Override
-+    public boolean isAllowed() {
++    public final boolean isAllowed() {
 +        return result == Result.ALLOW;
 +    }
 +
 +    @Override
-+    public boolean isDenied() {
++    public final boolean isDenied() {
 +        return result == Result.DENY;
 +    }
 +
 +    @Override
-+    public Result handle() {
++    public final Result handle() {
 +        return setResult(Result.HANDLE);
 +    }
 +
 +    @Override
-+    public Result allow() {
++    public final Result allow() {
 +        return setResult(Result.ALLOW);
 +    }
 +
 +    @Override
-+    public Result deny() {
++    public final Result deny() {
 +        return setResult(Result.DENY);
 +    }
 +
 +    @Override
-+    public Result setResultFromTo(Result from, Result to) {
++    public final Result setResultFromTo(Result from, Result to) {
 +        return result == from ? setResult(to) : result;
 +    }
 +
 +    @Override
-+    public Result handleIf(Result result) {
++    public final Result handleIf(Result result) {
 +        return setResultFromTo(result, Result.HANDLE);
 +    }
 +
 +    @Override
-+    public Result allowIf(Result result) {
++    public final Result allowIf(Result result) {
 +        return setResultFromTo(result, Result.ALLOW);
 +    }
 +
 +    @Override
-+    public Result denyIf(Result result) {
++    public final Result denyIf(Result result) {
 +        return setResultFromTo(result, Result.DENY);
 +    }
 +
 +    @Override
-+    public Result handleIfAllowed() {
++    public final Result handleIfAllowed() {
 +        return handleIf(Result.ALLOW);
 +    }
 +
 +    @Override
-+    public Result handleIfDenied() {
++    public final Result handleIfDenied() {
 +        return handleIf(Result.DENY);
 +    }
 +
 +    @Override
-+    public Result allowIfHandled() {
++    public final Result allowIfHandled() {
 +        return allowIf(Result.HANDLE);
 +    }
 +
 +    @Override
-+    public Result allowIfDenied() {
++    public final Result allowIfDenied() {
 +        return allowIf(Result.DENY);
 +    }
 +
 +    @Override
-+    public Result denyIfHandled() {
++    public final Result denyIfHandled() {
 +        return denyIf(Result.HANDLE);
 +    }
 +
 +    @Override
-+    public Result denyIfAllowed() {
++    public final Result denyIfAllowed() {
 +        return denyIf(Result.ALLOW);
 +    }
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java
 new file mode 100644
-index 0000000..0b7d8f4
+index 0000000..6992bda
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java
 @@ -0,0 +1,22 @@
@@ -224,7 +224,7 @@ index 0000000..0b7d8f4
 +    }
 +
 +    @Override
-+    public Class<TestListener> getListenerClass() {
++    protected Class<TestListener> getListenerClass() {
 +        return TestListener.class;
 +    }
 +}
@@ -316,7 +316,7 @@ index 0000000..33bd3b0
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/event/CancelableEvent.java b/sources/minecraft_server/com/vanillage/utils/event/CancelableEvent.java
 new file mode 100644
-index 0000000..dbe72ff
+index 0000000..15f55c7
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/event/CancelableEvent.java
 @@ -0,0 +1,35 @@
@@ -334,24 +334,24 @@ index 0000000..dbe72ff
 +    }
 +
 +    @Override
-+    public boolean isCanceled() {
++    public final boolean isCanceled() {
 +        return canceled;
 +    }
 +
 +    @Override
-+    public boolean setCanceled(boolean canceled) {
++    public final boolean setCanceled(boolean canceled) {
 +        boolean previous = this.canceled;
 +        this.canceled = canceled;
 +        return previous;
 +    }
 +
 +    @Override
-+    public boolean cancel() {
++    public final boolean cancel() {
 +        return setCanceled(true);
 +    }
 +
 +    @Override
-+    public boolean uncancel() {
++    public final boolean uncancel() {
 +        return setCanceled(false);
 +    }
 +}
@@ -490,7 +490,7 @@ index 0000000..5c03142
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/event/ResultableEvent.java b/sources/minecraft_server/com/vanillage/utils/event/ResultableEvent.java
 new file mode 100644
-index 0000000..be56927
+index 0000000..e49b51c
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/event/ResultableEvent.java
 @@ -0,0 +1,113 @@
@@ -512,12 +512,12 @@ index 0000000..be56927
 +    }
 +
 +    @Override
-+    public Result getResult() {
++    public final Result getResult() {
 +        return result;
 +    }
 +
 +    @Override
-+    public Result setResult(Result result) {
++    public final Result setResult(Result result) {
 +        if (result == null) {
 +            throw new IllegalArgumentException("result cannot be null");
 +        }
@@ -528,82 +528,82 @@ index 0000000..be56927
 +    }
 +
 +    @Override
-+    public boolean isHandled() {
++    public final boolean isHandled() {
 +        return result == Result.HANDLE;
 +    }
 +
 +    @Override
-+    public boolean isAllowed() {
++    public final boolean isAllowed() {
 +        return result == Result.ALLOW;
 +    }
 +
 +    @Override
-+    public boolean isDenied() {
++    public final boolean isDenied() {
 +        return result == Result.DENY;
 +    }
 +
 +    @Override
-+    public Result handle() {
++    public final Result handle() {
 +        return setResult(Result.HANDLE);
 +    }
 +
 +    @Override
-+    public Result allow() {
++    public final Result allow() {
 +        return setResult(Result.ALLOW);
 +    }
 +
 +    @Override
-+    public Result deny() {
++    public final Result deny() {
 +        return setResult(Result.DENY);
 +    }
 +
 +    @Override
-+    public Result setResultFromTo(Result from, Result to) {
++    public final Result setResultFromTo(Result from, Result to) {
 +        return result == from ? setResult(to) : result;
 +    }
 +
 +    @Override
-+    public Result handleIf(Result result) {
++    public final Result handleIf(Result result) {
 +        return setResultFromTo(result, Result.HANDLE);
 +    }
 +
 +    @Override
-+    public Result allowIf(Result result) {
++    public final Result allowIf(Result result) {
 +        return setResultFromTo(result, Result.ALLOW);
 +    }
 +
 +    @Override
-+    public Result denyIf(Result result) {
++    public final Result denyIf(Result result) {
 +        return setResultFromTo(result, Result.DENY);
 +    }
 +
 +    @Override
-+    public Result handleIfAllowed() {
++    public final Result handleIfAllowed() {
 +        return handleIf(Result.ALLOW);
 +    }
 +
 +    @Override
-+    public Result handleIfDenied() {
++    public final Result handleIfDenied() {
 +        return handleIf(Result.DENY);
 +    }
 +
 +    @Override
-+    public Result allowIfHandled() {
++    public final Result allowIfHandled() {
 +        return allowIf(Result.HANDLE);
 +    }
 +
 +    @Override
-+    public Result allowIfDenied() {
++    public final Result allowIfDenied() {
 +        return allowIf(Result.DENY);
 +    }
 +
 +    @Override
-+    public Result denyIfHandled() {
++    public final Result denyIfHandled() {
 +        return denyIf(Result.HANDLE);
 +    }
 +
 +    @Override
-+    public Result denyIfAllowed() {
++    public final Result denyIfAllowed() {
 +        return denyIf(Result.ALLOW);
 +    }
 +}
