@@ -1,0 +1,103 @@
+From 1155b4f928e3154d446b450a7bf1a1cfbcb4c519 Mon Sep 17 00:00:00 2001
+From: stonar96 <minecraft.stonar96@gmail.com>
+Date: Wed, 19 Sep 2018 02:00:07 +0200
+Subject: [PATCH] Add player logged in event
+
+
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoggedInEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoggedInEvent.java
+new file mode 100644
+index 0000000..f47bd35
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoggedInEvent.java
+@@ -0,0 +1,42 @@
++package com.vanillage.minecraftalphaserver.event;
++
++import com.vanillage.utils.event.ResultableEvent;
++
++import net.minecraft.src.NetLoginHandler;
++import net.minecraft.src.Packet1Login;
++
++public final class PlayerLoggedInEvent extends ResultableEvent<PlayerLoggedInListener, PlayerLoggedInEvent> {
++    private final NetLoginHandler netLoginHandler;
++    private final Packet1Login packet;
++    private String kickReason = "";
++
++    public PlayerLoggedInEvent(NetLoginHandler netLoginHandler, Packet1Login packet) {
++        this.netLoginHandler = netLoginHandler;
++        this.packet = packet;
++    }
++
++    public NetLoginHandler getNetLoginHandler() {
++        return netLoginHandler;
++    }
++
++    public Packet1Login getPacket() {
++        return packet;
++    }
++
++    public String getKickReason() {
++        return kickReason;
++    }
++
++    public void setKickReason(String kickReason) {
++        if (kickReason == null) {
++            throw new IllegalArgumentException("kickReason cannot be null");
++        }
++
++        this.kickReason = kickReason;
++    }
++
++    @Override
++    protected Class<PlayerLoggedInListener> getListenerClass() {
++        return PlayerLoggedInListener.class;
++    }
++}
+diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoggedInListener.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoggedInListener.java
+new file mode 100644
+index 0000000..2cd021a
+--- /dev/null
++++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoggedInListener.java
+@@ -0,0 +1,10 @@
++package com.vanillage.minecraftalphaserver.event;
++
++import com.vanillage.utils.event.Listener;
++
++public abstract class PlayerLoggedInListener extends Listener<PlayerLoggedInListener, PlayerLoggedInEvent> {
++    @Override
++    protected final Class<PlayerLoggedInListener> getListenerClass() {
++        return PlayerLoggedInListener.class;
++    }
++}
+diff --git a/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java b/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
+index af6ee32..fc175c6 100644
+--- a/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
++++ b/sources/minecraft_server/net/minecraft/src/NetLoginHandler.java
+@@ -3,6 +3,7 @@ package net.minecraft.src;
+ // Jad home page: http://www.kpdus.com/jad.html
+ // Decompiler options: packimports(3) braces deadcode 
+ 
++import com.vanillage.minecraftalphaserver.event.PlayerLoggedInEvent;//Mod: Add player logged in event
+ import com.vanillage.minecraftalphaserver.event.PlayerLoginEvent;//Mod: Add player login event
+ import java.io.IOException;
+ import java.net.Socket;
+@@ -117,7 +118,19 @@ public class NetLoginHandler extends NetHandler
+ 
+     public void doLogin(Packet1Login packet1login)
+     {
+-        EntityPlayerMP entityplayermp = mcServer.configManager.login(this, packet1login.username, packet1login.password);
++        PlayerLoggedInEvent event = new PlayerLoggedInEvent(this, packet1login);//Mod: Add player logged in event
++        mcServer.getPluginManager().getEventManager().callEvent(event);//Mod: Add player logged in event
++        if(finishedProcessing)//Mod: Add player logged in event
++        {//Mod: Add player logged in event
++            return;//Mod: Add player logged in event
++        }//Mod: Add player logged in event
++        if(event.isDenied())//Mod: Add player logged in event
++        {//Mod: Add player logged in event
++            kickUser(event.getKickReason());//Mod: Add player logged in event
++            return;//Mod: Add player logged in event
++        }//Mod: Add player logged in event
++        //EntityPlayerMP entityplayermp = mcServer.configManager.login(this, packet1login.username, packet1login.password);//Mc: Add player logged in event
++        EntityPlayerMP entityplayermp = event.isAllowed() ? new EntityPlayerMP(mcServer, mcServer.worldMngr, packet1login.username, new ItemInWorldManager(mcServer.worldMngr)) : mcServer.configManager.login(this, packet1login.username, packet1login.password);//Mod: Add player logged in event
+         if(entityplayermp != null)
+         {
+             logger.info((new StringBuilder()).append(getUserAndIPString()).append(" logged in with entity id ").append(entityplayermp.field_331_c).toString());

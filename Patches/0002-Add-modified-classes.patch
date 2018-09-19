@@ -1,20 +1,22 @@
-From 3afad1c185ebb04c9b0ab6c958662f57627c67d5 Mon Sep 17 00:00:00 2001
+From 879ac2e32116a2cd85ef2edcd26d9dfb99e1c800 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:34:44 +0200
 Subject: [PATCH] Add modified classes
 
 
 diff --git a/conf/server_obfuscation.txt b/conf/server_obfuscation.txt
-index e69de29..ab68d35 100644
+index e69de29..8a90358 100644
 --- a/conf/server_obfuscation.txt
 +++ b/conf/server_obfuscation.txt
-@@ -0,0 +1,29 @@
+@@ -0,0 +1,31 @@
 +MinecraftServer
 +EntityPlayerMP
 +NetLoginHandler
 +NetServerHandler
 +com.vanillage.minecraftalphaserver.event.CancelablePlayerEvent.class
 +com.vanillage.minecraftalphaserver.event.PlayerEvent.class
++com.vanillage.minecraftalphaserver.event.PlayerLoggedInEvent.class
++com.vanillage.minecraftalphaserver.event.PlayerLoggedInListener.class
 +com.vanillage.minecraftalphaserver.event.PlayerLoginEvent.class
 +com.vanillage.minecraftalphaserver.event.PlayerLoginListener.class
 +com.vanillage.minecraftalphaserver.event.ResultablePlayerEvent.class
