@@ -1,4 +1,4 @@
-From 001df21497e7842528373ee9fe797dc6dde7b627 Mon Sep 17 00:00:00 2001
+From 6d2f238584c4656e06a5471fa82c565ad29ca845 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 9 Sep 2018 03:39:59 +0200
 Subject: [PATCH] Add basic event system
@@ -6,24 +6,27 @@ Subject: [PATCH] Add basic event system
 
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/CancelablePlayerEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/CancelablePlayerEvent.java
 new file mode 100644
-index 0000000..606562c
+index 0000000..4f9b8bc
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/CancelablePlayerEvent.java
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,42 @@
 +package com.vanillage.minecraftalphaserver.event;
 +
 +import com.vanillage.utils.event.Cancelable;
 +import com.vanillage.utils.event.Event;
 +import com.vanillage.utils.event.Listener;
 +
-+public abstract class CancelablePlayerEvent<L extends Listener<L, SELF>, SELF extends Event<L, SELF>> extends Event<L, SELF> implements Cancelable {
++import net.minecraft.src.EntityPlayerMP;
++
++public abstract class CancelablePlayerEvent<L extends Listener<L, SELF>, SELF extends Event<L, SELF>> extends PlayerEvent<L, SELF> implements Cancelable {
 +    private boolean canceled;
 +
-+    public CancelablePlayerEvent() {
-+        this(false);
++    public CancelablePlayerEvent(EntityPlayerMP player) {
++        this(player, false);
 +    }
 +
-+    public CancelablePlayerEvent(boolean canceled) {
++    public CancelablePlayerEvent(EntityPlayerMP player, boolean canceled) {
++        super(player);
 +        this.canceled = canceled;
 +    }
 +
@@ -79,24 +82,28 @@ index 0000000..6477895
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/ResultablePlayerEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/ResultablePlayerEvent.java
 new file mode 100644
-index 0000000..41f0d4f
+index 0000000..2320728
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/ResultablePlayerEvent.java
-@@ -0,0 +1,117 @@
+@@ -0,0 +1,121 @@
 +package com.vanillage.minecraftalphaserver.event;
 +
 +import com.vanillage.utils.event.Event;
 +import com.vanillage.utils.event.Listener;
 +import com.vanillage.utils.event.Resultable;
 +
-+public abstract class ResultablePlayerEvent<L extends Listener<L, SELF>, SELF extends Event<L, SELF>> extends Event<L, SELF> implements Resultable {
++import net.minecraft.src.EntityPlayerMP;
++
++public abstract class ResultablePlayerEvent<L extends Listener<L, SELF>, SELF extends Event<L, SELF>> extends PlayerEvent<L, SELF> implements Resultable {
 +    private Result result;
 +
-+    public ResultablePlayerEvent() {
-+        this(Result.HANDLE);
++    public ResultablePlayerEvent(EntityPlayerMP player) {
++        this(player, Result.HANDLE);
 +    }
 +
-+    public ResultablePlayerEvent(Result result) {
++    public ResultablePlayerEvent(EntityPlayerMP player, Result result) {
++        super(player);
++
 +        if (result == null) {
 +            throw new IllegalArgumentException("result cannot be null");
 +        }
