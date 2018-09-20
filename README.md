@@ -18,4 +18,4 @@ TODO.
 ## How to develop plugins
 TODO.
 ## Official plugins
-There are none yet.
+[ValidUsername by stonar96](https://github.com/stonar96/ValidUsername)
