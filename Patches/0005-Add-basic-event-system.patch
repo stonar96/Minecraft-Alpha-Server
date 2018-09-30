@@ -1,4 +1,4 @@
-From 6d2f238584c4656e06a5471fa82c565ad29ca845 Mon Sep 17 00:00:00 2001
+From 3f2a555482dc05b23453a8c6b651a3b2e48fae64 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 9 Sep 2018 03:39:59 +0200
 Subject: [PATCH] Add basic event system
@@ -209,10 +209,10 @@ index 0000000..2320728
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java
 new file mode 100644
-index 0000000..6992bda
+index 0000000..535c907
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestEvent.java
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,26 @@
 +package com.vanillage.minecraftalphaserver.event;
 +
 +import com.vanillage.utils.event.Event;
@@ -223,6 +223,10 @@ index 0000000..6992bda
 +    private final MinecraftServer minecraftServer;
 +
 +    public TestEvent(MinecraftServer minecraftServer) {
++        if (minecraftServer == null) {
++            throw new IllegalArgumentException("minecraftServer cannot be null");
++        }
++
 +        this.minecraftServer = minecraftServer;
 +    }
 +
