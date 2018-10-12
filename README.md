@@ -1,14 +1,16 @@
 # Minecraft-Alpha-Server
 ## Prerequisites
+Information in \[brackets\] indicates details about the version which was used during testing. Other versions will probably also work but it would be too much work to test all possibilities.
 ### Windows
-* Git for Windows
-* JDK (+ environment variables)
+* Git for Windows \[2.19.1\]
+* \[Oracle\] JDK \[8\] with Path environment variable entry to \<path to java\>\jdk\<version\>\bin
+* .NET Framework 3.5 (Windows will probably ask you to install it while building the server if it is not already installed. Repeat the whole building process after installing the .NET Framework.)
 ### Linux
-* Git
+* Git \[2.19.1\]
 * Unzip
-* JDK
-* Wine and i386 architecture
-* Python
+* \[Open\]JDK \[8\]
+* Wine with i386 architecture
+* Python 2 (Currently there is a bug if you also have Phython 3 installed. Make sure that you only have Python 2. This will be fixed soon.)
 ### Mac
 I don't know.
 ## How to build
