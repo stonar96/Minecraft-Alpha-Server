@@ -9,8 +9,8 @@ Information in \[brackets\] indicates details about the version which was used d
 * Git \[2.19.1\]
 * Unzip
 * \[Open\]JDK \[8\]
-* Wine with i386 architecture
-* Python 2 (Currently there is a bug if you also have Phython 3 installed. Make sure that you only have Python 2. This will be fixed soon.)
+* Wine \[3.17\] with i386 architecture
+* Python 2 \[2.7.15\] (Currently there is a bug if you also have Phython 3 installed. Make sure that you only have Python 2. This will be fixed soon.)
 ### Mac
 I don't know.
 ## How to build
