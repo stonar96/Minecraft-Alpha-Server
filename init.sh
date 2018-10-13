@@ -50,4 +50,5 @@ case "$(uname -s)" in
 esac
 git add '.'
 git -c 'user.name=stonar96' -c 'user.email=minecraft.stonar96@gmail.com' commit -m 'Initial commit' --date='Sun Jan 1 00:00:00 2017 +0200'
+# https://stackoverflow.com/q/46395528
 GIT_COMMITTER_DATE='Sun Jan 1 00:00:00 2017 +0200' git -c 'user.name=stonar96' -c 'user.email=minecraft.stonar96@gmail.com' commit --amend --no-edit
