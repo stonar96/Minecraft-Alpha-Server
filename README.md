@@ -10,7 +10,7 @@ Information in \[brackets\] indicates details about the version which was used d
 * Unzip
 * \[Open\]JDK \[8\]
 * Wine \[3.17\] with i386 architecture
-* Python 2 \[2.7.15\] (Currently there is a bug if you also have Phython 3 installed. Make sure that you only have Python 2. This will be fixed soon.)
+* Python 2 \[2.7.15\]
 ### Mac
 I don't know.
 ## How to build

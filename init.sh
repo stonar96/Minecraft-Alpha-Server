@@ -20,6 +20,7 @@ git init
 git config core.autocrlf true
 cp -f '../Resources/mcp25.zip' 'mcp25.zip'
 unzip 'mcp25.zip'
+sed -i 's/python/python2/g' scripts-linux/decompile.sh scripts-linux/reobf.sh scripts-linux/update_names.sh tools-linux/annotate_gl_constants.py tools-linux/get_csv.py
 cp -rf 'scripts-linux/.' '.'
 rm -rf 'jars'
 mkdir 'jars'
