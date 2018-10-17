@@ -1,4 +1,4 @@
-From 59d194b18dee18fd7499b90494b2f732c4be6859 Mon Sep 17 00:00:00 2001
+From ca803e90fcb92e5ad157d44cd7c1c73453663421 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:46:47 +0200
 Subject: [PATCH] Add obfuscation helpers
