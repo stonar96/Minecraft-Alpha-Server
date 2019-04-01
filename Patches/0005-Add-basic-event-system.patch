@@ -1,4 +1,4 @@
-From 79b553c807ee281506b40d9eadfa4f95a0f757ad Mon Sep 17 00:00:00 2001
+From 4716fe21735a33f3e2336e771352aa2878477fa2 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 9 Sep 2018 03:39:59 +0200
 Subject: [PATCH] Add basic event system
@@ -241,15 +241,23 @@ index 0000000..535c907
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestListener.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestListener.java
 new file mode 100644
-index 0000000..eaf8e69
+index 0000000..62d17f5
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/TestListener.java
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,18 @@
 +package com.vanillage.minecraftalphaserver.event;
 +
 +import com.vanillage.utils.event.Listener;
 +
 +public abstract class TestListener extends Listener<TestListener, TestEvent> {
++    public TestListener() {
++        this(0);
++    }
++
++    public TestListener(int priority) {
++        super(priority);
++    }
++
 +    @Override
 +    protected final Class<TestListener> getListenerClass() {
 +        return TestListener.class;
@@ -435,19 +443,31 @@ index 0000000..25716b3
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/event/Listener.java b/sources/minecraft_server/com/vanillage/utils/event/Listener.java
 new file mode 100644
-index 0000000..16af987
+index 0000000..7e8c6c0
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/utils/event/Listener.java
-@@ -0,0 +1,11 @@
+@@ -0,0 +1,23 @@
 +package com.vanillage.utils.event;
 +
 +public abstract class Listener<SELF extends Listener<SELF, E>, E extends Event<SELF, E>> {
++    private final int priority;
++
++    // Force direct subclass of this class to define a constructor
++    // All direct subclasses of this class should care about the priority
++    /*public Listener() {
++        this(0);
++    }*/
++
++    public Listener(int priority) {
++        this.priority = priority;
++    }
++
 +    protected abstract void onEvent(E event);
 +
 +    protected abstract Class<SELF> getListenerClass();
 +
-+    protected int getPriority() {
-+        return 0;
++    protected final int getPriority() {
++        return priority;
 +    }
 +}
 diff --git a/sources/minecraft_server/com/vanillage/utils/event/Resultable.java b/sources/minecraft_server/com/vanillage/utils/event/Resultable.java

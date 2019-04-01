@@ -1,4 +1,4 @@
-From aa064ebca9a0ccdf5c7fdc6858b22e8aff45ade7 Mon Sep 17 00:00:00 2001
+From ac6df987656ec7d92baa70086633b106284408fa Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Tue, 18 Sep 2018 03:40:44 +0200
 Subject: [PATCH] Add player login event
@@ -72,15 +72,23 @@ index 0000000..80b4656
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoginListener.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoginListener.java
 new file mode 100644
-index 0000000..61c58d4
+index 0000000..f29585a
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoginListener.java
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,18 @@
 +package com.vanillage.minecraftalphaserver.event;
 +
 +import com.vanillage.utils.event.Listener;
 +
 +public abstract class PlayerLoginListener extends Listener<PlayerLoginListener, PlayerLoginEvent> {
++    public PlayerLoginListener() {
++        this(0);
++    }
++
++    public PlayerLoginListener(int priority) {
++        super(priority);
++    }
++
 +    @Override
 +    protected final Class<PlayerLoginListener> getListenerClass() {
 +        return PlayerLoginListener.class;

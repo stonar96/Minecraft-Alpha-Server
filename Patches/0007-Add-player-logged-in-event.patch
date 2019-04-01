@@ -1,4 +1,4 @@
-From 1ece4564da07a06dd92d880654156f236a0e232e Mon Sep 17 00:00:00 2001
+From e5fb4d040d35ade3988e777023efdb2c95bc9ccb Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Wed, 19 Sep 2018 02:00:07 +0200
 Subject: [PATCH] Add player logged in event
@@ -54,15 +54,23 @@ index 0000000..f47bd35
 +}
 diff --git a/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoggedInListener.java b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoggedInListener.java
 new file mode 100644
-index 0000000..2cd021a
+index 0000000..9771924
 --- /dev/null
 +++ b/sources/minecraft_server/com/vanillage/minecraftalphaserver/event/PlayerLoggedInListener.java
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,18 @@
 +package com.vanillage.minecraftalphaserver.event;
 +
 +import com.vanillage.utils.event.Listener;
 +
 +public abstract class PlayerLoggedInListener extends Listener<PlayerLoggedInListener, PlayerLoggedInEvent> {
++    public PlayerLoggedInListener() {
++        this(0);
++    }
++
++    public PlayerLoggedInListener(int priority) {
++        super(priority);
++    }
++
 +    @Override
 +    protected final Class<PlayerLoggedInListener> getListenerClass() {
 +        return PlayerLoggedInListener.class;
