@@ -1,11 +1,11 @@
-From ca3d971bd6dca5f864e6184c7d323dc66b3e19c0 Mon Sep 17 00:00:00 2001
+From fdad5a73e6bb2eca62423649c405db9db76e506f Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Sun, 24 Sep 2017 15:34:44 +0200
 Subject: [PATCH] Add modified classes
 
 
 diff --git a/conf/server_obfuscation.txt b/conf/server_obfuscation.txt
-index e69de29..8a90358 100644
+index e69de29..eb0b9c0 100644
 --- a/conf/server_obfuscation.txt
 +++ b/conf/server_obfuscation.txt
 @@ -0,0 +1,31 @@
@@ -34,7 +34,7 @@ index e69de29..8a90358 100644
 +com.vanillage.utils.event.Resultable$Result.class
 +com.vanillage.utils.event.Resultable.class
 +com.vanillage.utils.event.ResultableEvent.class
-+com.vanillage.utils.plugin.JarFilenameFilter.class
++com.vanillage.utils.plugin.JarsDirectoryPluginLoader$1.class
 +com.vanillage.utils.plugin.JarsDirectoryPluginLoader.class
 +com.vanillage.utils.plugin.SimplePlugin.class
 +com.vanillage.utils.plugin.SimplePluginLoader.class
