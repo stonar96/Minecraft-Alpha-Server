@@ -6,7 +6,7 @@ else
   rm -rf 'Resources'
   mkdir 'Resources'
   cd 'Resources'
-  curl -o 'mcp25.html' 'http://www.mediafire.com/file/7422b88qu650547/mcp25.zip'
+  curl -o 'mcp25.html' 'http://www.mediafire.com/file/7422b88qu650547/mcp25.zip/file'
   curl -O "$(egrep -o -m 1 'http://download.{20,40}/7422b88qu650547/mcp25\.zip' mcp25.html | head -1)"
   rm -f 'mcp25.html'
   curl -O 'https://web.archive.org/web/20101205185606/http://www.minecraft.net:80/download/minecraft_server.jar'
