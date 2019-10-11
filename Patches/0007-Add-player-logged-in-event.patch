@@ -1,4 +1,4 @@
-From e5fb4d040d35ade3988e777023efdb2c95bc9ccb Mon Sep 17 00:00:00 2001
+From 34f6547f82953ce5ae73e91548b96d2f9bd18470 Mon Sep 17 00:00:00 2001
 From: stonar96 <minecraft.stonar96@gmail.com>
 Date: Wed, 19 Sep 2018 02:00:07 +0200
 Subject: [PATCH] Add player logged in event

@@ -61,7 +61,7 @@ Thumbs.db
 
 # IDE #
 #######
-sources/.settings/
-sources/.classpath
-sources/.gitignore
-sources/.project
+/sources/.settings/
+/sources/.classpath
+/sources/.gitignore
+/sources/.project
