@@ -12,6 +12,7 @@ Information in \[brackets\] indicates details about the version which was used d
 * .NET Framework 3.5 (Windows will probably ask you to install it while building the server if it is not already installed. Repeat the whole building process after installing the .NET Framework.)
 ### Linux
 * Git \[2.19.1\]
+* Curl
 * Unzip
 * \[Open\]JDK \[8\]
 * Wine \[3.17\] with i386 architecture
